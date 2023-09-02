@@ -1,5 +1,4 @@
-<?php include_once 'ppic_headers.php'; ?>
-
+<?php require_once 'ppic_nav.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,108 +38,108 @@
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
       <!-- Main Content -->
-      <div id="content">
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
-          <!-- OPEN SALES TABLE -->
-          <div class="card shadow my-3">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">
-                Sales Orders
-              </h6>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered table-hover display compact" id="sales_orders" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <!-- <th>No.</th> -->
-                      <th>Status</th>
-                      <th>Internal Number</th>
-                      <th>Document Number</th>
-                      <th>Customer/Vendor Code</th>
-                      <th>Customer/Vendor Name</th>
-                      <th>Posting Date</th>
-                      <th>Row Delivery Date</th>
-                      <th>Item No</th>
-                      <th>Item/Service Description</th>
-                      <th>Customer Part No</th>
-                      <th>Customer/Vendor Cat.No.</th>
-                      <th>Qty</th>
-                      <th>Inventory UoM</th>
-                      <th>Purchasing UoM</th>
-                      <th>Open Qty</th>
-                      <th>WareHouse Code</th>
-                      <th>Price Currency</th>
-                      <th>Distribution Rule</th>
-                      <th>Unit price</th>
-                      <th>Orig Amt</th>
-                      <th>Open Amt</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Sales Emp Name</th>
-                      <th>Remarks</th>
-                      <th>Pay Terms Code</th>
-                      <th>Payment Terms Code</th>
-                      <th>Ref Number</th>
-                      <th>BP Reference No.</th>
-                      <th>Customer PO No</th>
-                      <th>Delivered Qty</th>
-                      <th>Add'l txt</th>
-                      <th>Free txt</th>
-                      <th>Contact Person</th>
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                      <th>ID</th>
-                      <!-- <th>No.</th> -->
-                      <th>Status</th>
-                      <th>Internal Number</th>
-                      <th>Document Number</th>
-                      <th>Customer/Vendor Code</th>
-                      <th>Customer/Vendor Name</th>
-                      <th>Posting Date</th>
-                      <th>Row Delivery Date</th>
-                      <th>Item No</th>
-                      <th>Item/Service Description</th>
-                      <th>Customer Part No</th>
-                      <th>Customer/Vendor Cat.No.</th>
-                      <th>Qty</th>
-                      <th>Inventory UoM</th>
-                      <th>Purchasing UoM</th>
-                      <th>Open Qty</th>
-                      <th>WareHouse Code</th>
-                      <th>Price Currency</th>
-                      <th>Distribution Rule</th>
-                      <th>Unit price</th>
-                      <th>Orig Amt</th>
-                      <th>Open Amt</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Sales Emp Name</th>
-                      <th>Remarks</th>
-                      <th>Pay Terms Code</th>
-                      <th>Payment Terms Code</th>
-                      <th>Ref Number</th>
-                      <th>BP Reference No.</th>
-                      <th>Customer PO No</th>
-                      <th>Delivered Qty</th>
-                      <th>Add'l txt</th>
-                      <th>Free txt</th>
-                      <th>Contact Person</th>
-                    </tr>
-                  </tfoot>
-                  <tbody>
-                  </tbody>
-                </table>
-              </div>
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+        <!-- OPEN SALES TABLE -->
+        <div class="card shadow my-3">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+              Sales Orders
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover display compact" id="sales_orders" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <!-- <th>No.</th> -->
+                    <th>Status</th>
+                    <th>Internal Number</th>
+                    <th>Document Number</th>
+                    <th>Customer/Vendor Code</th>
+                    <th>Customer/Vendor Name</th>
+                    <th>Posting Date</th>
+                    <th>Row Delivery Date</th>
+                    <th>Item No</th>
+                    <th>Item/Service Description</th>
+                    <th>Customer Part No</th>
+                    <th>Customer/Vendor Cat.No.</th>
+                    <th>Qty</th>
+                    <th>Inventory UoM</th>
+                    <th>Purchasing UoM</th>
+                    <th>Open Qty</th>
+                    <th>WareHouse Code</th>
+                    <th>Price Currency</th>
+                    <th>Distribution Rule</th>
+                    <th>Unit price</th>
+                    <th>Orig Amt</th>
+                    <th>Open Amt</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Sales Emp Name</th>
+                    <th>Remarks</th>
+                    <th>Pay Terms Code</th>
+                    <th>Payment Terms Code</th>
+                    <th>Ref Number</th>
+                    <th>BP Reference No.</th>
+                    <th>Customer PO No</th>
+                    <th>Delivered Qty</th>
+                    <th>Add'l txt</th>
+                    <th>Free txt</th>
+                    <th>Contact Person</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>ID</th>
+                    <!-- <th>No.</th> -->
+                    <th>Status</th>
+                    <th>Internal Number</th>
+                    <th>Document Number</th>
+                    <th>Customer/Vendor Code</th>
+                    <th>Customer/Vendor Name</th>
+                    <th>Posting Date</th>
+                    <th>Row Delivery Date</th>
+                    <th>Item No</th>
+                    <th>Item/Service Description</th>
+                    <th>Customer Part No</th>
+                    <th>Customer/Vendor Cat.No.</th>
+                    <th>Qty</th>
+                    <th>Inventory UoM</th>
+                    <th>Purchasing UoM</th>
+                    <th>Open Qty</th>
+                    <th>WareHouse Code</th>
+                    <th>Price Currency</th>
+                    <th>Distribution Rule</th>
+                    <th>Unit price</th>
+                    <th>Orig Amt</th>
+                    <th>Open Amt</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Sales Emp Name</th>
+                    <th>Remarks</th>
+                    <th>Pay Terms Code</th>
+                    <th>Payment Terms Code</th>
+                    <th>Ref Number</th>
+                    <th>BP Reference No.</th>
+                    <th>Customer PO No</th>
+                    <th>Delivered Qty</th>
+                    <th>Add'l txt</th>
+                    <th>Free txt</th>
+                    <th>Contact Person</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-        <!-- /.container-fluid -->
       </div>
+      <!-- /.container-fluid -->
+
       <!-- End of Main Content -->
 
       <!-- Footer -->
@@ -156,21 +155,6 @@
     <!-- End of Content Wrapper -->
   </div>
   <!-- End of Page Wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
 
   <!-- Page level plugins -->
   <script src="vendor/datatables/jquery.dataTables.min.js"></script>
