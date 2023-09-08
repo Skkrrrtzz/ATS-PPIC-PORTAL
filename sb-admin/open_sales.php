@@ -1,5 +1,4 @@
 <?php require_once 'ppic_nav.php'; ?>
-<?php require_once 'ppic_nav.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
