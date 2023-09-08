@@ -266,16 +266,16 @@
             data: 'Docu_status',
             render: function(data, type, row) {
               if (data === 'O') {
-                // if (row.Row_Del_date) {
-                //   var deliveryDate = new Date(row.Row_Del_date);
-                //   var currentDate = new Date();
+                if (row.Row_Del_date) {
+                  var deliveryDate = new Date(row.Row_Del_date);
+                  var currentDate = new Date();
 
-                //   if (deliveryDate < currentDate && data === 'O') {
-                //     // If the delivery date is in the past, display both "OPEN" and "DELAYED" badges
-                //     return '<span class="badge badge-warning fw-bold">OPEN</span> ' +
-                //       '<span class="badge badge-danger fw-bold">DELAYED</span>';
-                //   }
-                // }
+                  if (deliveryDate < currentDate && data === 'O') {
+                    // If the delivery date is in the past, display both "OPEN" and "DELAYED" badges
+                    return '<span class="badge badge-warning fw-bold">OPEN</span> ' +
+                      '<span class="badge badge-danger fw-bold">DELAYED</span>';
+                  }
+                }
                 return '<span class="badge badge-warning fw-bold">OPEN</span>';
               } else if (data === 'C') {
                 return '<span class="badge badge-success fw-bold">CLOSED</span>';
