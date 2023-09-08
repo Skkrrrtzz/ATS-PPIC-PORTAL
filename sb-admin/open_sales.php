@@ -1,5 +1,4 @@
-<?php include_once 'ppic_headers.php'; ?>
-
+<?php require_once 'ppic_nav.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +10,7 @@
   <meta name="author" content="" />
   <!-- Custom styles for this page -->
   <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+  <link href="vendor/datatables/buttons.dataTables.min.css" rel="stylesheet">
   <style>
     .dataTables_wrapper .dataTables_filter {
       margin-top: .5rem;
@@ -22,6 +22,14 @@
       margin-right: .5rem;
     }
 
+    .dataTables_wrapper .dataTables_wrapper dt-bootstrap4 {
+      margin-top: .5rem;
+      margin-right: .5rem;
+    }
+
+    .dataTables_wrapper .dt-buttons {
+      color: #6c757d;
+    }
 
     table.dataTable th {
       font-size: 14px;
@@ -39,108 +47,108 @@
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
       <!-- Main Content -->
-      <div id="content">
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
-          <!-- OPEN SALES TABLE -->
-          <div class="card shadow my-3">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">
-                Sales Orders
-              </h6>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered table-hover display compact" id="sales_orders" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <!-- <th>No.</th> -->
-                      <th>Status</th>
-                      <th>Internal Number</th>
-                      <th>Document Number</th>
-                      <th>Customer/Vendor Code</th>
-                      <th>Customer/Vendor Name</th>
-                      <th>Posting Date</th>
-                      <th>Row Delivery Date</th>
-                      <th>Item No</th>
-                      <th>Item/Service Description</th>
-                      <th>Customer Part No</th>
-                      <th>Customer/Vendor Cat.No.</th>
-                      <th>Qty</th>
-                      <th>Inventory UoM</th>
-                      <th>Purchasing UoM</th>
-                      <th>Open Qty</th>
-                      <th>WareHouse Code</th>
-                      <th>Price Currency</th>
-                      <th>Distribution Rule</th>
-                      <th>Unit price</th>
-                      <th>Orig Amt</th>
-                      <th>Open Amt</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Sales Emp Name</th>
-                      <th>Remarks</th>
-                      <th>Pay Terms Code</th>
-                      <th>Payment Terms Code</th>
-                      <th>Ref Number</th>
-                      <th>BP Reference No.</th>
-                      <th>Customer PO No</th>
-                      <th>Delivered Qty</th>
-                      <th>Add'l txt</th>
-                      <th>Free txt</th>
-                      <th>Contact Person</th>
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                      <th>ID</th>
-                      <!-- <th>No.</th> -->
-                      <th>Status</th>
-                      <th>Internal Number</th>
-                      <th>Document Number</th>
-                      <th>Customer/Vendor Code</th>
-                      <th>Customer/Vendor Name</th>
-                      <th>Posting Date</th>
-                      <th>Row Delivery Date</th>
-                      <th>Item No</th>
-                      <th>Item/Service Description</th>
-                      <th>Customer Part No</th>
-                      <th>Customer/Vendor Cat.No.</th>
-                      <th>Qty</th>
-                      <th>Inventory UoM</th>
-                      <th>Purchasing UoM</th>
-                      <th>Open Qty</th>
-                      <th>WareHouse Code</th>
-                      <th>Price Currency</th>
-                      <th>Distribution Rule</th>
-                      <th>Unit price</th>
-                      <th>Orig Amt</th>
-                      <th>Open Amt</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Sales Emp Name</th>
-                      <th>Remarks</th>
-                      <th>Pay Terms Code</th>
-                      <th>Payment Terms Code</th>
-                      <th>Ref Number</th>
-                      <th>BP Reference No.</th>
-                      <th>Customer PO No</th>
-                      <th>Delivered Qty</th>
-                      <th>Add'l txt</th>
-                      <th>Free txt</th>
-                      <th>Contact Person</th>
-                    </tr>
-                  </tfoot>
-                  <tbody>
-                  </tbody>
-                </table>
-              </div>
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+        <!-- OPEN SALES TABLE -->
+        <div class="card shadow my-3">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+              Sales Orders
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover text-nowrap " width="100%" cellspacing="0" id="sales_orders">
+                <thead class="bg-gray-300 text-dark">
+                  <tr>
+                    <th>ID</th>
+                    <th>BP Reference No.</th>
+                    <th>Posting Date</th>
+                    <th>Row Delivery Date</th>
+                    <th>Customer Part No</th>
+                    <th>Item/Service Description</th>
+                    <th>Qty</th>
+                    <th>Open Qty</th>
+                    <th>Remarks</th>
+                    <!-- <th>No.</th> -->
+                    <th>Status</th>
+                    <th>Internal Number</th>
+                    <th>Document Number</th>
+                    <th>Customer/Vendor Code</th>
+                    <th>Customer/Vendor Name</th>
+                    <th>Item No</th>
+                    <th>Customer/Vendor Cat.No.</th>
+                    <th>Inventory UoM</th>
+                    <th>Purchasing UoM</th>
+                    <th>WareHouse Code</th>
+                    <th>Price Currency</th>
+                    <th>Distribution Rule</th>
+                    <th>Unit price</th>
+                    <th>Orig Amt</th>
+                    <th>Open Amt</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Sales Emp Name</th>
+                    <th>Pay Terms Code</th>
+                    <th>Payment Terms Code</th>
+                    <th>Ref Number</th>
+                    <th>Customer PO No</th>
+                    <th>Delivered Qty</th>
+                    <th>Add'l txt</th>
+                    <th>Free txt</th>
+                    <th>Contact Person</th>
+                  </tr>
+                </thead>
+                <tfoot class="bg-gray-300 text-dark">
+                  <tr>
+                    <th>ID</th>
+                    <th>BP Reference No.</th>
+                    <th>Posting Date</th>
+                    <th>Row Delivery Date</th>
+                    <th>Customer Part No</th>
+                    <th>Item/Service Description</th>
+                    <th>Qty</th>
+                    <th>Open Qty</th>
+                    <th>Remarks</th>
+                    <!-- <th>No.</th> -->
+                    <th>Status</th>
+                    <th>Internal Number</th>
+                    <th>Document Number</th>
+                    <th>Customer/Vendor Code</th>
+                    <th>Customer/Vendor Name</th>
+                    <th>Item No</th>
+                    <th>Customer/Vendor Cat.No.</th>
+                    <th>Inventory UoM</th>
+                    <th>Purchasing UoM</th>
+                    <th>WareHouse Code</th>
+                    <th>Price Currency</th>
+                    <th>Distribution Rule</th>
+                    <th>Unit price</th>
+                    <th>Orig Amt</th>
+                    <th>Open Amt</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Sales Emp Name</th>
+                    <th>Pay Terms Code</th>
+                    <th>Payment Terms Code</th>
+                    <th>Ref Number</th>
+                    <th>Customer PO No</th>
+                    <th>Delivered Qty</th>
+                    <th>Add'l txt</th>
+                    <th>Free txt</th>
+                    <th>Contact Person</th>
+                  </tr>
+                </tfoot>
+                <tbody class=" border border-dark">
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-        <!-- /.container-fluid -->
       </div>
+      <!-- /.container-fluid -->
+
       <!-- End of Main Content -->
 
       <!-- Footer -->
@@ -157,91 +165,119 @@
   </div>
   <!-- End of Page Wrapper -->
 
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
-
   <!-- Page level plugins -->
   <script src="vendor/datatables/jquery.dataTables.min.js"></script>
   <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="js/demo/datatables-demo.js"></script>
+  <script src="vendor/datatables/dataTables.buttons.min.js"></script>
+  <script src="vendor/datatables/buttons.colVis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
   <script>
     $(document).ready(function() {
+      var defaultVisibleColumns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
       var table = $('#sales_orders').DataTable({
         ajax: {
           url: 'get_data.php',
           method: 'GET',
           dataSrc: ''
         },
-        // dom: 'B<"row"<"col-sm-6"l><"col-sm-6"f>>t<"row"<"col-sm-6"i><"col-sm-6"p>>',
-        // buttons: [{
-        //   extend: 'copyHtml5',
-        //   text: '<i class="fa-solid fa-copy"></i> Copy',
-        //   className: 'btn btn-dark-subtle btn-sm',
-        //   init: function(api, node, config) {
-        //     $(node).removeClass('dt-button');
-        //   }
-        // }, {
-        //   extend: 'excelHtml5',
-        //   text: '<i class="fa-solid fa-file-excel"></i> Excel',
-        //   className: 'btn btn-success btn-sm',
-        //   init: function(api, node, config) {
-        //     $(node).removeClass('dt-button');
-        //   }
-        // }, {
-        //   extend: 'csvHtml5',
-        //   text: '<i class="fa-solid fa-file-csv"></i> CSV',
-        //   className: 'btn btn-dark btn-sm',
-        //   init: function(api, node, config) {
-        //     $(node).removeClass('dt-button');
-        //   }
-        // }, {
-        //   extend: 'print',
-        //   text: '<i class="fa-solid fa-print"></i> Print',
-        //   className: 'btn btn-info btn-sm',
-        //   init: function(api, node, config) {
-        //     $(node).removeClass('dt-button');
-        //   }
-        // }],
+        dom: 'B<"row"<"col-sm-6"l><"col-sm-6"f>>t<"row"<"col-sm-6"i><"col-sm-6"p>>',
+        buttons: [{
+          extend: 'copyHtml5',
+          text: '<i class="fas fa-copy"></i> Copy',
+          exportOptions: {
+            columns: ':visible' // Export only visible columns
+          }
+        }, {
+          extend: 'excelHtml5',
+          text: '<i class="fas fa-file-excel"></i> Excel',
+          exportOptions: {
+            columns: ':visible' // Export only visible columns
+          }
+        }, {
+          extend: 'csvHtml5',
+          text: '<i class="fas fa-file-csv"></i> CSV',
+          exportOptions: {
+            columns: ':visible' // Export only visible columns
+          }
+        }, {
+          extend: 'pdfHtml5',
+          text: '<i class="fas fa-file-pdf"></i> PDF',
+          orientation: 'landscape',
+          pageSize: 'LEGAL',
+          exportOptions: {
+            columns: ':visible' // Export only visible columns
+          }
+        }, {
+          extend: 'colvis',
+          text: '<i class="fas fa-filter text"></i> Hide columns',
+          collectionLayout: 'fixed columns',
+          collectionTitle: 'Column visibility control',
+        }],
         deferRender: true,
         scrollX: true,
         scrollY: '50vh',
-        // language: {
-        //   searchPlaceholder: 'Search here..',
-        //   search: ""
-        // },
         fixedColumns: true,
+        columnDefs: [{
+            targets: defaultVisibleColumns,
+            visible: true // Set the default columns to be visible
+          },
+          {
+            targets: '_all', // Target all columns
+            visible: false // Hide all other columns by default
+          }
+        ],
         order: [
           [1, 'asc']
         ],
-        // columnDefs: [{
-        //   targets: [''],
-        //   className: "fontsize"
-        // }],
         columns: [{
             data: 'ID'
+          },
+          {
+            data: 'BP_Reference_No'
+          },
+          {
+            data: 'Posting_date'
+          },
+          {
+            data: 'Row_Del_date',
+          },
+          {
+            data: 'Customer_part_no'
+          },
+          {
+            data: 'Item/Service_description'
+          },
+          {
+            data: 'Qty'
+          },
+          {
+            data: 'Open_Qty'
+          },
+          {
+            data: 'Remarks'
           },
           {
             data: 'Docu_status',
             render: function(data, type, row) {
               if (data === 'O') {
-                return '<span class="badge badge-success fw-bold">OPEN</span>';
+                // if (row.Row_Del_date) {
+                //   var deliveryDate = new Date(row.Row_Del_date);
+                //   var currentDate = new Date();
+
+                //   if (deliveryDate < currentDate && data === 'O') {
+                //     // If the delivery date is in the past, display both "OPEN" and "DELAYED" badges
+                //     return '<span class="badge badge-warning fw-bold">OPEN</span> ' +
+                //       '<span class="badge badge-danger fw-bold">DELAYED</span>';
+                //   }
+                // }
+                return '<span class="badge badge-warning fw-bold">OPEN</span>';
               } else if (data === 'C') {
-                return '<span class="badge badge-warning fw-bold">CLOSED</span>';
+                return '<span class="badge badge-success fw-bold">CLOSED</span>';
               } else {
                 return data;
               }
@@ -260,34 +296,16 @@
             data: 'CV_name'
           },
           {
-            data: 'Posting_date'
-          },
-          {
-            data: 'Row_Del_date'
-          },
-          {
             data: 'Item_no'
           },
           {
-            data: 'Item/Service_description'
-          },
-          {
-            data: 'Customer_part_no'
-          },
-          {
             data: 'CV_Cat_No'
-          },
-          {
-            data: 'Qty'
           },
           {
             data: 'Inventory_UoM'
           },
           {
             data: 'Purchasing_UoM'
-          },
-          {
-            data: 'Open_Qty'
           },
           {
             data: 'WH_Code'
@@ -323,9 +341,6 @@
             data: 'Sales_Emp_name'
           },
           {
-            data: 'Remarks'
-          },
-          {
             data: 'Pay_Terms_Code'
           },
           {
@@ -333,9 +348,6 @@
           },
           {
             data: 'Ref_Number'
-          },
-          {
-            data: 'BP_Reference_No'
           },
           {
             data: 'Customer_PO_No'
