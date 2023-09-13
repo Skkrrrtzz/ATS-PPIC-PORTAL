@@ -1,4 +1,5 @@
 <?php include_once '../db.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     // Query to fetch data from sales_order table
