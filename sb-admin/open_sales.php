@@ -47,7 +47,6 @@
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
       <!-- Main Content -->
-
       <!-- Begin Page Content -->
       <div class="container-fluid">
         <!-- OPEN SALES TABLE -->
@@ -60,9 +59,9 @@
           <div class="card-body">
             <div class="table-responsive">
               <div class="m-1">
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-upload"></i> Upload Excel</button>
+                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-upload"></i> Upload Excel</button>
               </div>
-              <table class="table table-bordered table-hover text-nowrap " width="100%" cellspacing="0" id="sales_orders">
+              <table class="table table-bordered table-hover text-nowrap" width="100%" cellspacing="0" id="sales_orders">
                 <thead class="bg-gray-300 text-dark">
                   <tr>
                     <th>ID</th>
@@ -150,10 +149,7 @@
           </div>
         </div>
       </div>
-      <!-- /.container-fluid -->
-
       <!-- End of Main Content -->
-
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
@@ -222,7 +218,7 @@
           method: 'GET',
           dataSrc: ''
         },
-        dom: '<"row m-1"<"col-sm-6"Bl><"col-sm-6"f>>t<"row"<"col-sm-6"i><"col-sm-6"p>>',
+        dom: '<"row m-1"<"col-sm-8"Bl><"col-sm-4"f>>t<"row"<"col-sm-6"i><"col-sm-6"p>>',
         buttons: [{
           extend: 'copyHtml5',
           text: '<i class="fas fa-copy"></i> Copy',

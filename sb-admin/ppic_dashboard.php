@@ -15,25 +15,24 @@
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-2">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate
-                Report</a>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
         </div>
         <!-- Content Row -->
         <div class="row">
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
+                <div class="card border-left-warning shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                     Open Sales Orders
                                 </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <div class="h4 mb-0 font-weight-bold text-gray-800">
                                     <?php echo $openSalesCount; ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <i class="fas fa-dollar-sign text-success"></i><?php echo $openSalesPrice; ?>
+                                    <i class="fas fa-dollar-sign"></i><?php echo $openSalesPrice; ?>
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -45,14 +44,14 @@
             </div>
 
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                     Closed Sales Orders
                                 </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <div class="h4 mb-0 font-weight-bold text-gray-800">
                                     <?php echo $closedSalesCount; ?>
                                 </div>
                             </div>
@@ -65,16 +64,16 @@
             </div>
 
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card border-left-danger shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                     Delayed Sales Orders
                                 </div>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-auto">
-                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        <div class="h4 mb-0 mr-3 font-weight-bold text-gray-800">
                                             <?php echo $delayedSalesCount; ?>
                                         </div>
                                     </div>
@@ -116,18 +115,18 @@
         </div>
         <div class="row">
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body" type="button" data-toggle="modal" data-target="#openSalesModal">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="font-weight-bold text-primary text-uppercase mb-1">
+                                <div class="h6 font-weight-bold text-warning text-uppercase mb-1">
                                     Delivery this Month of <?php echo date("F"); ?>
                                 </div>
                                 <div class="h4 mb-0 font-weight-bold text-gray-800">
                                     <?php echo $openSalesdelThisMonth; ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <i class="fas fa-dollar-sign text-success"></i><?php echo $openSalesdelThisMonthPrice; ?>
+                                    <i class="fas fa-dollar-sign"></i><?php echo $openSalesdelThisMonthPrice; ?>
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -137,8 +136,162 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body" type="button" data-toggle="modal" data-target="#closedSalesModal">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h6 font-weight-bold text-success text-uppercase mb-1">
+                                    Delivered this Month of <?php echo date("F"); ?>
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800">
+                                    <?php echo $closedSalesdelThisMonth; ?>
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <i class="fas fa-dollar-sign"></i><?php echo $closedSalesdelThisMonthPrice; ?>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-shipping-fast fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--Open Delivery this Month Modal -->
+    <div class="modal fade" id="openSalesModal" tabindex="-1" aria-labelledby="openSalesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">Delivery this Month of <?php echo date("F"); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>BP Reference No.</th>
+                                    <th>Posting Date</th>
+                                    <th>Row Delivery Date</th>
+                                    <th>Customer Part No</th>
+                                    <th>Item/Service Description</th>
+                                    <th>Qty</th>
+                                    <th>Open Qty</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $rowNumber = 1; // Initialize the row number counter
+
+                                while ($row_open_delry_date = $stmt_del_date_open->fetch(PDO::FETCH_ASSOC)) {
+                                    echo '<tr>';
+                                    echo '<td>' . $rowNumber . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_open_delry_date['BP_Reference_No']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_open_delry_date['Posting_date']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_open_delry_date['Row_Del_date']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_open_delry_date['Customer_part_no']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_open_delry_date['Item_Service_description']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_open_delry_date['Qty']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_open_delry_date['Open_Qty']) . '</td>';
+                                    echo '<td>';
+                                    $docuStatus = $row_open_delry_date['Docu_status'];
+                                    if ($docuStatus === 'O') {
+                                        echo '<span class="badge badge-warning fw-bold">OPEN</span>';
+                                    } elseif ($docuStatus === 'C') {
+                                        echo '<span class="badge badge-success fw-bold">CLOSED</span>';
+                                    } else {
+                                        // Handle other cases if needed
+                                        echo htmlspecialchars($docuStatus);
+                                    }
+                                    echo '</td>';
+                                    echo '</tr>';
+                                    $rowNumber++; // Increment the row number counter
+                                }
+                                ?>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
+    <!--Closed Delivered this Month Modal -->
+    <div class="modal fade" id="closedSalesModal" tabindex="-1" aria-labelledby="closedSalesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">Delivered this Month of <?php echo date("F"); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>BP Reference No.</th>
+                                    <th>Posting Date</th>
+                                    <th>Row Delivery Date</th>
+                                    <th>Customer Part No</th>
+                                    <th>Item/Service Description</th>
+                                    <th>Qty</th>
+                                    <th>Open Qty</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $rowNumber = 1; // Initialize the row number counter
+
+                                while ($row_closed_delvrd_date = $stmt_del_date_closed->fetch(PDO::FETCH_ASSOC)) {
+                                    echo '<tr>';
+                                    echo '<td>' . $rowNumber . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_closed_delvrd_date['BP_Reference_No']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_closed_delvrd_date['Posting_date']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_closed_delvrd_date['Row_Del_date']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_closed_delvrd_date['Customer_part_no']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_closed_delvrd_date['Item_Service_description']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_closed_delvrd_date['Qty']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row_closed_delvrd_date['Open_Qty']) . '</td>';
+                                    echo '<td>';
+                                    $docuStatus = $row_closed_delvrd_date['Docu_status'];
+                                    if ($docuStatus === 'O') {
+                                        echo '<span class="badge badge-warning fw-bold">OPEN</span>';
+                                    } elseif ($docuStatus === 'C') {
+                                        echo '<span class="badge badge-success fw-bold">CLOSED</span>';
+                                    } else {
+                                        // Handle other cases if needed
+                                        echo htmlspecialchars($docuStatus);
+                                    }
+                                    echo '</td>';
+                                    echo '</tr>';
+                                    $rowNumber++; // Increment the row number counter
+                                }
+                                ?>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

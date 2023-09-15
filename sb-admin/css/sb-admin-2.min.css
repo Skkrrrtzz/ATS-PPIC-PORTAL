@@ -9322,7 +9322,7 @@ a:focus {
   width: 2rem;
 }
 .topbar {
-  height: 4.375rem;
+  height: 3.5rem;
 }
 .topbar #sidebarToggleTop {
   height: 2.5rem;
@@ -9344,11 +9344,11 @@ a:focus {
 .topbar .topbar-divider {
   width: 0;
   border-right: 1px solid #e3e6f0;
-  height: calc(4.375rem - 2rem);
+  height: calc(3.5rem - 2rem);
   margin: auto 1rem;
 }
 .topbar .nav-item .nav-link {
-  height: 4.375rem;
+  height: 3.5rem;
   display: flex;
   align-items: center;
   padding: 0 0.75rem;
