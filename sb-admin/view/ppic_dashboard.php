@@ -1,4 +1,6 @@
-<?php require_once 'ppic_nav.php'; ?>
+<?php require_once 'ppic_nav.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -159,7 +161,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <!--Open Delivery this Month Modal -->
     <div class="modal fade" id="openSalesModal" tabindex="-1" aria-labelledby="openSalesModalLabel" aria-hidden="true">

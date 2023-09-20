@@ -1,5 +1,4 @@
-<?php
-include_once '../db.php';
+<?php include_once 'db.php';
 session_start();
 
 // Create a prepared statement for the sales dashboard query

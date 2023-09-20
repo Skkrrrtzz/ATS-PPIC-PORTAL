@@ -9,8 +9,8 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   <!-- Custom styles for this page -->
-  <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
-  <link href="vendor/datatables/buttons.dataTables.min.css" rel="stylesheet">
+  <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+  <link href="../vendor/datatables/buttons.dataTables.min.css" rel="stylesheet">
   <style>
     .dataTables_wrapper .dataTables_filter {
       margin-top: .5rem;
@@ -52,9 +52,9 @@
         <!-- OPEN SALES TABLE -->
         <div class="card shadow my-3">
           <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+            <h4 class="m-0 font-weight-bold text-primary">
               Sales Orders
-            </h6>
+            </h4>
           </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -198,23 +198,23 @@
   </div>
 
   <!-- Page level plugins -->
-  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-  <script src="vendor/datatables/dataTables.buttons.min.js"></script>
-  <script src="vendor/datatables/buttons.colVis.min.js"></script>
+  <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+  <script src="../vendor/datatables/dataTables.buttons.min.js"></script>
+  <script src="../vendor/datatables/buttons.colVis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-  <script src="js/sweetalert2.all.min.js"></script>
+  <script src="../js/sweetalert2.all.min.js"></script>
 
   <script>
     $(document).ready(function() {
       var defaultVisibleColumns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
       var table = $('#sales_orders').DataTable({
         ajax: {
-          url: 'get_data.php',
+          url: '../controller/get_data.php',
           method: 'GET',
           dataSrc: ''
         },
@@ -425,7 +425,7 @@
         var formData = new FormData(this);
 
         $.ajax({
-          url: "upload_excel.php",
+          url: "../controller/upload_excel.php",
           type: "POST",
           data: formData,
           dataType: "json",
