@@ -42,6 +42,8 @@ include_once '../controller/commands.php';
                 <div class="my-0">
                     <!-- Forecast Button -->
                     <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#forecastModal">Edit Forecast</button>
+                    <!-- Save Button -->
+                    <button type="submit" class="btn btn-success btn-sm float-end" id="saveChangesBtn" name="save_btn">Save Changes</button>
                     <!-- Upload Button -->
                     <input type="file" class="form-control-file d-none" id="pdfUpload" accept=".pdf">
                     <label for="pdfUpload" class="btn btn-primary btn-sm mt-2" id="uploadButton">Upload PDF</label>
@@ -57,8 +59,8 @@ include_once '../controller/commands.php';
                             <tr>
                                 <th class="h3 fw-bold bg-blue-60" rowspan="4" width='20%'>Product</th>
                                 <th class="h4 m-2 fw-bold bg-light">Month</th>
-                                <th class="h4 m-2 fw-bold bg-blue-80" colspan="4"><?php echo $currentMonthName; ?></th>
-                                <th class="h4 m-2 fw-bold bg-gray-60" colspan="5"><?php echo $nextMonthName; ?></th>
+                                <th class="h4 m-2 fw-bold bg-blue-80" colspan="4" name="curmonth"><?php echo $currentMonthName; ?></th>
+                                <th class="h4 m-2 fw-bold bg-gray-60" colspan="5" name="nxtmonth"><?php echo $nextMonthName; ?></th>
                             </tr>
                             <tr>
                                 <th class="bg-light fw-bold">WW</th>
@@ -67,7 +69,7 @@ include_once '../controller/commands.php';
                                     // Check if the week's Sunday date's month matches the current month
                                     $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
                                     $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
-                                    echo "<th class='$class fw-bold'>Week $week</th>";
+                                    echo "<th class='$class fw-bold' name='week'>Week $week</th>";
                                 } ?>
                             </tr>
 
@@ -78,7 +80,7 @@ include_once '../controller/commands.php';
                                     // Check if the date's month matches the current month
                                     $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
                                     $class = $isCurrentMonth ? 'bg-blue-60' : 'bg-gray-80';
-                                    echo "<th class='$class fw-bold'>$sunday</th>";
+                                    echo "<th class='$class fw-bold' name='wkstart'>$sunday</th>";
                                 } ?>
                             </tr>
                             <tr>
@@ -90,7 +92,7 @@ include_once '../controller/commands.php';
                                     // Check if the date's month matches the current month
                                     $isCurrentMonth = (date('F', strtotime($saturday)) === $currentMonthName);
                                     $class = $isCurrentMonth ? 'bg-blue-60' : 'bg-gray-80';
-                                    echo "<th class='$class'>$saturday</th>";
+                                    echo "<th class='$class' name='wkend'>$saturday</th>";
                                     // Check if $saturday falls on a Saturday
                                     if (date('l', strtotime($saturday)) === 'Saturday') {
                                         $saturdaysCount++;
@@ -99,53 +101,85 @@ include_once '../controller/commands.php';
                                 ?>
                             </tr>
                         </thead>
-                        <?php foreach ($products as $product) { ?>
-                            <tbody class="text-center text-dark">
-                                <tr>
-                                    <td rowspan="7" class="h3 fw-bold"><?php echo $product; ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Prod Build Qty</td>
-                                    <?php
+                        <?php
+                        foreach ($products as $product) {
+                        }
+                        $tbodyId = 'tbody_' . $product;
+                        $build_qtyId = 'prod_build_qty' . $product;
+                        $product_noId = 'product_no' . $product;
+                        $ship_qtyId = 'shipment_qty' . $product;
+                        $boh_eohId = 'boh_eoh' . $product;
+                        $actual_batch_outputId = 'actual_batch_output' . $product;
+                        $delayId = 'delay' . $product;
+                        ?>
+                        <tbody class="text-center text-dark" id=<?php echo $tbodyId; ?>'>
+                            <tr>
+                                <td rowspan="7" class="h3 fw-bold" name="product"><?php echo $product; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Prod Build Qty</td>
+                                <?php
+                                for ($i = 0; $i < $saturdaysCount; $i++) {
+                                    echo  "<td contenteditable='true' id='$build_qtyId' name='prod_build_qty'></td>";
+                                }
+                                ?>
+                            </tr>
+                            <tr>
+                                <td><?php echo $product; ?> No.</td>
+                                <?php
+                                for ($i = 0; $i < $saturdaysCount; $i++) {
+                                    $firstEditableAdded = false;
                                     for ($i = 0; $i < $saturdaysCount; $i++) {
-                                        echo  "<td contenteditable='true' class='prod_build_qty' id='$product'></td>";
+                                        if (!$firstEditableAdded) {
+                                            echo "<td contenteditable='true' id='$product_noId' name='prod_no'></td>";
+                                            $firstEditableAdded = true;
+                                        } else {
+                                            echo "<td id='$product_noId' name='prod_no'></td>";
+                                        }
                                     }
-                                    ?>
-                                </tr>
-                                <tr>
-                                    <td><?php echo $product; ?> No.</td>
-                                    <?php
-                                    for ($i = 0; $i < $saturdaysCount; $i++) {
-                                        echo "<td contenteditable='true' class='product_no' id='$product'></td>";
+                                }
+                                ?>
+                            </tr>
+                            <tr>
+                                <td>Shipment Qty</td>
+                                <?php
+                                for ($i = 0; $i < $saturdaysCount; $i++) {
+                                    echo "<td contenteditable='true' id='$ship_qtyId' name='ship_qty'></td>";
+                                }
+                                ?>
+                            </tr>
+                            <tr>
+                                <td>BOH/EOH</td>
+                                <?php
+                                $firstEditableAdded = false;
+                                for ($i = 0; $i < $saturdaysCount; $i++) {
+                                    if (!$firstEditableAdded) {
+                                        echo "<td contenteditable='true' id='$boh_eohId' name='boh_eoh'></td>";
+                                        $firstEditableAdded = true;
+                                    } else {
+                                        echo "<td id='$boh_eohId'></td>";
                                     }
-                                    ?>
-                                </tr>
-                                <tr>
-                                    <td>Shipment Qty</td>
-                                    <?php
-                                    for ($i = 0; $i < $saturdaysCount; $i++) {
-                                        echo "<td contenteditable='true' id='ship_qty'></td>";
-                                    }
-                                    ?>
-                                </tr>
-                                <tr>
-                                    <td>BOH/EOH</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>Actual Batch Output</td>
-                                    <?php
-                                    for ($i = 0; $i < $saturdaysCount; $i++) {
-                                        echo "<td contenteditable='true' id='actual_batch_$i'></td>";
-                                    }
-                                    ?>
-                                </tr>
-                                <tr>
-                                    <td>Delay</td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        <?php } ?>
+                                }
+                                ?>
+                            </tr>
+                            <tr>
+                                <td>Actual Batch Output</td>
+                                <?php
+                                for ($i = 0; $i < $saturdaysCount; $i++) {
+                                    echo "<td contenteditable='true' id='$actual_batch_outputId' name='act_batch_output'></td>";
+                                }
+                                ?>
+                            </tr>
+                            <tr>
+                                <td>Delay</td>
+                                <?php
+                                for ($i = 0; $i < $saturdaysCount; $i++) {
+                                    echo "<td id='$delayId' name='delay'></td>";
+                                }
+                                ?>
+                            </tr>
+                        </tbody>
+                        <?php  ?>
                     </table>
                 </div>
             </div>
@@ -195,6 +229,138 @@ include_once '../controller/commands.php';
         </div>
     </div>
     <script>
+        $(document).ready(function() {
+            function isWithinDateRange(editedValue, curMonth, dateRange) {
+                // Split the date range into Sunday and Saturday dates
+                let sundayDate = dateRange["Sunday"];
+                let saturdayDate = dateRange["Saturday"];
+
+                // Convert the Sunday and Saturday dates to JavaScript Date objects
+                let sundayDateObj = new Date(sundayDate);
+                let saturdayDateObj = new Date(saturdayDate);
+
+                // Check if the current month matches the specified month
+                if (curMonth !== sundayDateObj.toLocaleString('en-US', {
+                        month: 'long'
+                    })) {
+                    return false;
+                }
+
+                // Convert the edited value to a number (assuming it's a numeric value)
+                let editedValueNumber = parseFloat(editedValue);
+
+                // Check if the edited value is a valid number
+                if (isNaN(editedValueNumber)) {
+                    return false;
+                }
+
+                // Check if the edited value is within the range of 0 and 100 (or adjust as needed)
+                if (editedValueNumber < 0 || editedValueNumber > 100) {
+                    return false;
+                }
+
+                // Check if the edited value is within the date range
+                if (sundayDateObj <= saturdayDateObj) {
+                    // If Sunday is before or the same as Saturday, check if the edited value
+                    // falls within the range of Sunday and Saturday dates
+                    let editedDateObj = new Date(sundayDate);
+                    editedDateObj.setDate(editedDateObj.getDate() + 1); // Start from Sunday
+
+                    while (editedDateObj <= saturdayDateObj) {
+                        if (editedDateObj.toLocaleDateString() === sundayDateObj.toLocaleDateString()) {
+                            // If the edited date matches a date within the range, return true
+                            return true;
+                        }
+                        editedDateObj.setDate(editedDateObj.getDate() + 1); // Move to the next day
+                    }
+                }
+
+                // If none of the conditions matched, return false
+                return false;
+            }
+
+            // Disable the save button initially
+            $("#saveChangesBtn").prop("disabled", true);
+
+            // Create an array to store the edited data
+            let editedData = [];
+
+            // Define the expected month, week, and date range
+            let curMonth = "<?php echo $currentMonthName; ?>";
+            let weekNumbers = <?php echo json_encode($weekNumbers); ?>;
+            let dateRanges = <?php echo json_encode($dateRanges); ?>;
+
+            // Add event listener for detecting changes in the table cells
+            $("tbody tr td").on("input", function() {
+                // Enable the save button when any cell is edited
+                $("#saveChangesBtn").prop("disabled", false);
+
+                // Get the edited cell's content
+                let editedCellValue = $(this).text();
+                // Get the ID attribute of the edited cell (which corresponds to the product name)
+                let productId = $(this).attr("id");
+                let cellIndex = $(this).index();
+                // Find the corresponding week number based on the product ID
+                let weekNumber = weekNumbers[cellIndex];
+
+                // Add debugging statements
+                console.log("productId:", productId);
+                console.log("weekNumber:", weekNumber);
+                console.log("dateRange:", dateRanges[weekNumber]);
+                console.log("Value:", editedCellValue);
+                console.log("Index:", cellIndex);
+                // Get the date range for the corresponding week number
+                let dateRange = dateRanges[weekNumber];
+
+                // Check if the edited value is within the expected month and date range
+                if (isWithinDateRange(editedCellValue, curMonth, dateRange)) {
+                    // Get the ID attribute of the edited cell (which corresponds to the product name)
+                    let productId = $(this).attr("id");
+
+                    // Push the edited data to the array
+                    editedData.push({
+                        curMonth: curMonth,
+                        week: week,
+                        dateRange: dateRange,
+                        product: productId,
+                        value: editedCellValue
+                    });
+                } else {
+                    alert("Invalid value for the selected month, week, or date range.");
+                    // You can choose to revert the cell value to its previous state here
+                }
+            });
+
+            // Add event listener for saving changes
+            $("#saveChangesBtn").click(function() {
+                // Check if any data has been edited
+                if (editedData.length > 0) {
+                    // Send the edited data to the PHP script using AJAX
+                    $.ajax({
+                        url: "../controller/commands.php",
+                        method: "POST",
+                        data: {
+                            data: editedData
+                        },
+                        success: function(response) {
+                            // Handle the success response
+                            console.log(response);
+                            alert("Data updated successfully!");
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle the error response
+                            console.log(xhr.responseText);
+                            alert("Error: " + xhr.responseText);
+                        }
+                    });
+                } else {
+                    alert("No changes to save.");
+                }
+            });
+        });
+
+
+
         // document.getElementById('sidebarToggleTop').click();
         // JavaScript code to add the bg-pink class if the td has a numeric value
         const editableCells = document.querySelectorAll("#ship_qty");
@@ -220,64 +386,65 @@ include_once '../controller/commands.php';
                 cell.textContent = numericContent;
             });
         });
-        const prodBuildQtyCells = document.querySelectorAll(".prod_build_qty");
-        const productNoCells = document.querySelectorAll(".product_no");
-        const productData = {};
+        // const prodBuildQtyCells = document.querySelectorAll(".prod_build_qty");
+        // const productNoCells = document.querySelectorAll(".product_no");
+        // const productData = {};
 
-        prodBuildQtyCells.forEach(prodBuildQtyCell => {
-            const productId = prodBuildQtyCell.id;
-            prodBuildQtyCell.addEventListener("input", function(event) {
-                const newValue = event.target.textContent;
+        // prodBuildQtyCells.forEach(prodBuildQtyCell => {
+        //     const productId = prodBuildQtyCell.id;
+        //     prodBuildQtyCell.addEventListener("input", function(event) {
+        //         const newValue = event.target.textContent;
 
-                // Numeric value validation
-                const numericValue = parseFloat(newValue);
-                if (!isNaN(numericValue)) {
-                    // Store productId and newValue in the object
-                    productData[productId] = numericValue;
+        //         // Numeric value validation
+        //         const numericValue = parseFloat(newValue);
+        //         if (!isNaN(numericValue)) {
+        //             // Store productId and newValue in the object
+        //             productData[productId] = numericValue;
 
-                    // Update the value in all "prod_build_qty" cells with the same id
-                    prodBuildQtyCells.forEach(cellToUpdate => {
-                        if (cellToUpdate.id === productId) {
-                            cellToUpdate.textContent = numericValue;
-                        }
-                    });
+        //             // Update the value in all "prod_build_qty" cells with the same id
+        //             prodBuildQtyCells.forEach(cellToUpdate => {
+        //                 if (cellToUpdate.id === productId) {
+        //                     cellToUpdate.textContent = numericValue;
+        //                 }
+        //             });
 
-                    // Add the value of "product_no" to "prod_build_qty"
-                    const productNoValue = productData[`product_no_${productId}`] || 0; // Get "product_no" value or default to 0
-                    const totalValue = numericValue + productNoValue;
+        //             // Add the value of "product_no" to "prod_build_qty"
+        //             const productNoValue = productData[`product_no_${productId}`] || 0; // Get "product_no" value or default to 0
+        //             const totalValue = numericValue + productNoValue;
 
-                    // Log the updated values
-                    console.log(`Product ID: ${productId}`);
-                    console.log("Updated Value in all cells (prod_build_qty):", numericValue);
-                    console.log("Value of product_no:", productNoValue);
-                    console.log("Total Value:", totalValue);
-                } else {
-                    // Invalid input, you can handle this case as needed
-                    console.log("Invalid input in prod_build_qty. Please enter a numeric value.");
-                }
-            });
-        });
+        //             // Log the updated values
+        //             console.log(`Product ID: ${productId}`);
+        //             console.log("Updated Value in all cells (prod_build_qty):", numericValue);
+        //             console.log("Value of product_no:", productNoValue);
+        //             console.log("Total Value:", totalValue);
+        //         } else {
+        //             // Invalid input, you can handle this case as needed
+        //             console.log("Invalid input in prod_build_qty. Please enter a numeric value.");
+        //         }
+        //     });
+        // });
 
-        productNoCells.forEach(productNoCell => {
-            const productId = productNoCell.id;
-            productNoCell.addEventListener("input", function(event) {
-                const newValue = event.target.textContent;
+        // productNoCells.forEach(productNoCell => {
+        //     const productId = productNoCell.id;
+        //     productNoCell.addEventListener("input", function(event) {
+        //         const newValue = event.target.textContent;
 
-                // Numeric value validation
-                const numericValue = parseFloat(newValue);
-                if (!isNaN(numericValue)) {
-                    // Store productId and newValue in the object with a unique key
-                    productData[`product_no_${productId}`] = numericValue;
+        //         // Numeric value validation
+        //         const numericValue = parseFloat(newValue);
+        //         if (!isNaN(numericValue)) {
+        //             // Store productId and newValue in the object with a unique key
+        //             productData[`product_no_${productId}`] = numericValue;
 
-                    // Log the value inputted based on the id for "product_no"
-                    console.log(`Inputted Value for id ${productId} (product_no):`, numericValue);
-                } else {
-                    // Invalid input, you can handle this case as needed
-                    console.log("Invalid input in product_no. Please enter a numeric value.");
-                }
-            });
-        });
+        //             // Log the value inputted based on the id for "product_no"
+        //             console.log(`Inputted Value for id ${productId} (product_no):`, numericValue);
+        //         } else {
+        //             // Invalid input, you can handle this case as needed
+        //             console.log("Invalid input in product_no. Please enter a numeric value.");
+        //         }
+        //     });
+        // });
 
+        // Javascript for uploading PDF file and Viewing uploaded PDF
         $(document).ready(function() {
             $("#pdfUpload").click(function() {
                 $("#pdfUpload").change(function() {
@@ -335,8 +502,8 @@ include_once '../controller/commands.php';
                             }
                         } catch (error) {
                             // Handle JSON parsing errors or other issues
-                            console.error(error);
-                            alert("Error parsing the server response.");
+                            // console.error(error);
+                            alert("No PDF uploaded");
                         }
                     },
                     error: function() {
