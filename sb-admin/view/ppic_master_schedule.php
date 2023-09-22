@@ -31,30 +31,31 @@ include_once '../controller/commands.php';
     </style>
 </head>
 
-<body id="delPlanStatus">
+<body id="master_schedule">
     <div class="container-fluid">
-        <div class="card shadow my-3">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <div class="card shadow my-2">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="m-0 font-weight-bold text-primary">
                     Master Schedule
                 </h4>
-                <div>
+                <!-- Buttons -->
+                <div class="my-0">
+                    <!-- Forecast Button -->
+                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#forecastModal">Edit Forecast</button>
                     <!-- Upload Button -->
-                    <label for="pdfUpload" class="form-label">Upload PDF</label>
                     <input type="file" class="form-control-file d-none" id="pdfUpload" accept=".pdf">
-                    <label for="pdfUpload" class="btn btn-primary btn-sm m-2" id="uploadButton">Upload</label>
-
+                    <label for="pdfUpload" class="btn btn-primary btn-sm mt-2" id="uploadButton">Upload PDF</label>
                     <!-- View Button -->
-                    <button type="button" class="btn btn-primary btn-sm ml-2" id="viewPdfButton">View PDF</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="viewPdfButton">View PDF</button>
                 </div>
             </div>
             <div id="message"></div>
-            <div class="card-body" style="height: 600px; overflow-y: auto;">
+            <div class="card-body" style="height: 550px; overflow-y: auto;">
                 <div class=" table-responsive">
                     <table class=" table-bordered" style="width: 100%;">
-                        <thead class="text-center text-dark sticky-top">
+                        <thead class="text-center text-dark">
                             <tr>
-                                <th class=" h3 fw-bold bg-blue-60" rowspan="4">Product</th>
+                                <th class="h3 fw-bold bg-blue-60" rowspan="4" width='20%'>Product</th>
                                 <th class="h4 m-2 fw-bold bg-light">Month</th>
                                 <th class="h4 m-2 fw-bold bg-blue-80" colspan="4"><?php echo $currentMonthName; ?></th>
                                 <th class="h4 m-2 fw-bold bg-gray-60" colspan="5"><?php echo $nextMonthName; ?></th>
@@ -115,7 +116,7 @@ include_once '../controller/commands.php';
                                     <td><?php echo $product; ?> No.</td>
                                     <?php
                                     for ($i = 0; $i < $saturdaysCount; $i++) {
-                                        echo "<td contenteditable='true' class='product_no' id='product_no'></td>";
+                                        echo "<td contenteditable='true' class='product_no' id='$product'></td>";
                                     }
                                     ?>
                                 </tr>
@@ -150,23 +151,51 @@ include_once '../controller/commands.php';
             </div>
         </div>
     </div>
-    <!-- Add this modal to your HTML -->
+    <!-- Modal for Viewing PDF -->
     <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="pdfModalLabel">PDF Viewer</h5>
+                <div class="modal-header bg-gray-300 my-0">
+                    <h5 class="modal-title fw-bold" id="pdfModalLabel">PDF Viewer</h5>
+
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+                    <h6 class="" id="uploaded_by"></h6>
                     <iframe id="pdfViewer" src="" frameborder="0" style="width: 100%; height: 100%;"></iframe>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Modal for editing Forecast -->
+    <div class="modal fade" id="forecastModal" tabindex="-1" aria-labelledby="forecastModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title text-warning" id="forecastModalLabel">Editing Forecast</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
+        // document.getElementById('sidebarToggleTop').click();
         // JavaScript code to add the bg-pink class if the td has a numeric value
         const editableCells = document.querySelectorAll("#ship_qty");
 
@@ -191,49 +220,62 @@ include_once '../controller/commands.php';
                 cell.textContent = numericContent;
             });
         });
+        const prodBuildQtyCells = document.querySelectorAll(".prod_build_qty");
+        const productNoCells = document.querySelectorAll(".product_no");
+        const productData = {};
 
-        document.addEventListener("input", function(event) {
-            const firstProdBuildQty = document.querySelector(".prod_build_qty");
-            const firstproduct_no_cell = document.querySelector("#product_no");
+        prodBuildQtyCells.forEach(prodBuildQtyCell => {
+            const productId = prodBuildQtyCell.id;
+            prodBuildQtyCell.addEventListener("input", function(event) {
+                const newValue = event.target.textContent;
 
-            if (firstProdBuildQty && firstproduct_no_cell) {
-                const firstProd_Build_Qty = firstProdBuildQty.textContent;
-                const firstProduct_No = firstproduct_no_cell.textContent;
-                console.log("First Value:", firstProd_Build_Qty);
-                console.log("First Value:", firstProduct_No);
-            } else {
-                console.log("No element found");
-            }
-            // Send the values to the server via AJAX
-            fetch("../controller/get_data.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        prod_build_qty: Prod_Build_Qty,
-                        product_no: Product_No,
-                        solve: true,
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Data sent successfully:", data);
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
+                // Numeric value validation
+                const numericValue = parseFloat(newValue);
+                if (!isNaN(numericValue)) {
+                    // Store productId and newValue in the object
+                    productData[productId] = numericValue;
 
+                    // Update the value in all "prod_build_qty" cells with the same id
+                    prodBuildQtyCells.forEach(cellToUpdate => {
+                        if (cellToUpdate.id === productId) {
+                            cellToUpdate.textContent = numericValue;
+                        }
+                    });
+
+                    // Add the value of "product_no" to "prod_build_qty"
+                    const productNoValue = productData[`product_no_${productId}`] || 0; // Get "product_no" value or default to 0
+                    const totalValue = numericValue + productNoValue;
+
+                    // Log the updated values
+                    console.log(`Product ID: ${productId}`);
+                    console.log("Updated Value in all cells (prod_build_qty):", numericValue);
+                    console.log("Value of product_no:", productNoValue);
+                    console.log("Total Value:", totalValue);
+                } else {
+                    // Invalid input, you can handle this case as needed
+                    console.log("Invalid input in prod_build_qty. Please enter a numeric value.");
+                }
+            });
         });
 
+        productNoCells.forEach(productNoCell => {
+            const productId = productNoCell.id;
+            productNoCell.addEventListener("input", function(event) {
+                const newValue = event.target.textContent;
 
+                // Numeric value validation
+                const numericValue = parseFloat(newValue);
+                if (!isNaN(numericValue)) {
+                    // Store productId and newValue in the object with a unique key
+                    productData[`product_no_${productId}`] = numericValue;
 
-        // JavaScript to handle the modal
-        document.getElementById('viewPdfButton').addEventListener('click', function() {
-            // Replace 'pdf_url.pdf' with the actual URL of the PDF you want to display
-            var pdfUrl = '/ATS/ATSPPIC_PORTAL/files_data/pdf/try_convert_pdf.pdf';
-            document.getElementById('pdfViewer').src = pdfUrl;
-            $('#pdfModal').modal('show');
+                    // Log the value inputted based on the id for "product_no"
+                    console.log(`Inputted Value for id ${productId} (product_no):`, numericValue);
+                } else {
+                    // Invalid input, you can handle this case as needed
+                    console.log("Invalid input in product_no. Please enter a numeric value.");
+                }
+            });
         });
 
         $(document).ready(function() {
@@ -258,6 +300,48 @@ include_once '../controller/commands.php';
                                 $("#message").html(response);
                             }
                         });
+                    }
+                });
+            });
+
+            // Attach a click event handler to the "View PDF" button
+            $("#viewPdfButton").click(function() {
+
+                $.ajax({
+                    type: "POST",
+                    url: "../controller/upload_file.php",
+                    data: {
+                        empName: '<?php echo $emp_name; ?>',
+                        upload: true
+                    }, // Pass the parameter as an object
+                    success: function(response) {
+                        try {
+                            // Parse the JSON response
+                            var responseData = JSON.parse(response);
+
+                            // Check if responseData has the file_loc property
+                            if (responseData.file_loc) {
+                                // Combine "Uploaded by:" and the value of uploaded_by
+                                var uploadedByText = "Uploaded by: " + responseData.uploaded_by + " - Date: " + responseData.uploaded_date;
+                                // Set the text content of the HTML element
+                                $("#uploaded_by").text(uploadedByText);
+                                // Set the src attribute of the iframe in the modal
+                                $("#pdfViewer").attr("src", responseData.file_loc);
+                                // Show the modal
+                                $("#pdfModal").modal("show");
+                            } else {
+                                // Handle the case where the PDF URL is not found
+                                alert("PDF URL not found in the database.");
+                            }
+                        } catch (error) {
+                            // Handle JSON parsing errors or other issues
+                            console.error(error);
+                            alert("Error parsing the server response.");
+                        }
+                    },
+                    error: function() {
+                        // Handle AJAX error, if any
+                        alert("Error fetching PDF URL from the database.");
                     }
                 });
             });

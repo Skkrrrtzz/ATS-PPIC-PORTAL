@@ -312,11 +312,9 @@ if (empty($_SESSION['Emp_ID']) || $_SESSION['role'] !== 'planner') {
 
         <!-- Page level plugins -->
         <script src="../vendor/chart.js/Chart.min.js"></script>
-
         <!-- Page level custom scripts -->
-        <!-- <script src="js/demo/chart-area-demo.js"></script>
-      <script src="js/demo/chart-pie-demo.js"></script> -->
         <script>
+          document.getElementById('sidebarToggleTop').click();
           // Get the current URL
           var currentUrl = window.location.pathname;
           // Split the URL by '/' and get the last segment

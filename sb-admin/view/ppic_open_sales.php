@@ -50,8 +50,8 @@
       <!-- Begin Page Content -->
       <div class="container-fluid">
         <!-- OPEN SALES TABLE -->
-        <div class="card shadow my-3">
-          <div class="card-header py-3">
+        <div class="card shadow my-2">
+          <div class="card-header">
             <h4 class="m-0 font-weight-bold text-primary">
               Sales Orders
             </h4>
@@ -177,7 +177,7 @@
           <!-- Form for uploading Excel file -->
           <form id="excelUploadForm" enctype="multipart/form-data">
             <div class="form-group" id="fileInputGroup">
-              <label for="excelFile">Only accept these file types: xlsx, xls, csv</label>
+              <label for="excelFile">Only accept these file types: xlsx, xls, csv.</br> And correct format of excel.</label>
               <input type="file" class="form-control-file" id="excelFile" name="excelFile" accept=".xlsx, .xls, .csv">
             </div>
           </form>
@@ -190,8 +190,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" form="excelUploadForm" class="btn btn-success">Upload</button>
+          <button type="submit" form="excelUploadForm" id="uploadButton" class="btn btn-success">Upload</button>
         </div>
       </div>
     </div>
@@ -402,6 +401,9 @@
       $("#excelUploadForm").submit(function(event) {
         event.preventDefault(); // Prevent the default form submission
 
+        // Disable the upload button
+        $("#uploadButton").prop("disabled", true);
+
         // Check if a file has been selected
         var fileInput = document.getElementById("excelFile");
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
@@ -415,6 +417,10 @@
             showConfirmButton: false,
             timer: 3000 // 3 seconds
           });
+
+          // Enable the upload button
+          $("#uploadButton").prop("disabled", false);
+
           return; // Exit the function
         }
 
@@ -432,14 +438,15 @@
           contentType: false,
           processData: false,
           success: function(response) {
+            // console.log(response);
             // Hide the loading spinner and show the file input again
             $("#loadingSpinner").addClass("d-none");
             $("#fileInputGroup").css("display", "block");
 
-            if (response.success) {
+            if (response.icon === "success") {
               // File upload was successful, show a success toast
               Swal.fire({
-                icon: 'success',
+                icon: response.icon,
                 title: 'Success',
                 text: response.message,
                 toast: true,
@@ -452,13 +459,11 @@
               // Close the modal
               $('#uploadModal').modal('hide');
               table.ajax.reload(); // Log the rowData
-
             } else {
               // File upload failed, show an error toast
-              console.log(response.message);
               Swal.fire({
-                icon: 'error',
-                title: 'Error',
+                icon: response.icon,
+                title: 'Warning!',
                 text: response.message,
                 toast: true,
                 position: 'top-end',
@@ -466,22 +471,26 @@
                 timer: 3000 // 3 seconds
               });
             }
+
+            // Enable the upload button
+            $("#uploadButton").prop("disabled", false);
           },
           error: function(xhr, status, error) {
             // Hide the loading spinner and show the file input again
             $("#loadingSpinner").addClass("d-none");
             $("#fileInputGroup").css("display", "block");
-            console.log(error);
             // File upload failed, show an error toast
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: error,
+              text: 'Cannot read the excel file!',
               toast: true,
               position: 'top-end',
               showConfirmButton: false,
-              timer: 3000 // 3 seconds
+              timer: 5000
             });
+            // Enable the upload button
+            $("#uploadButton").prop("disabled", false);
           }
         });
       });

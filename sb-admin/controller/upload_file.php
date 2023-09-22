@@ -54,19 +54,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             $message = "Invalid file format. Please upload a PDF.";
-        }
-    } else {
-        $message = "No file was uploaded.";
-    }
-    // Display the message as a Bootstrap 4 alert
-    $alertType = ($message === "PDF uploaded successfully! File size: $formattedFileSize") ? "alert-success" : "alert-danger";
-    $messageHTML = '<div class="alert ' . $alertType . ' alert-dismissible fade show m-2" role="alert">
+        } // Display the message as a Bootstrap 4 alert
+        $alertType = ($message === "PDF uploaded successfully! File size: $formattedFileSize") ? "alert-success" : "alert-danger";
+        $messageHTML = '<div class="alert ' . $alertType . ' alert-dismissible fade show m-2" role="alert">
                 ' . $message . '
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>';
-    echo $messageHTML;
+        echo $messageHTML;
+    } elseif (isset($_POST['upload'])) {
+        // This is the code for retrieving the PDF URL
+        $uploadedBy = $_POST['empName'];
+
+        $query = "SELECT uploaded_date, file_loc,uploaded_by FROM data_files WHERE uploaded_by = :uploadedBy ORDER BY uploaded_date DESC LIMIT 1";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(":uploadedBy", $uploadedBy, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                // Create an associative array with the values you want to send
+                $response = [
+                    'uploaded_date' => $row['uploaded_date'],
+                    'file_loc' => $row['file_loc'],
+                    'uploaded_by' => $row['uploaded_by']
+                ];
+
+                // Encode the response as JSON and send it
+                echo json_encode($response);
+            } else {
+                $message = "File location not found in the database.";
+            }
+        } else {
+            $message = "Error fetching file location from the database.";
+        }
+        echo $message;
+    } else {
+        $message = "No file was uploaded.";
+    }
 } else {
     echo $message = "No Connection!";
 }

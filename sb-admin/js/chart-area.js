@@ -63,7 +63,7 @@ var myLineChart = new Chart(ctx, {
             padding: 10,
             // Include a dollar sign in the ticks
             callback: function (value, index, values) {
-              return "$" + number_format(value);
+              return "$" + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
             },
           },
           gridLines: {
@@ -97,7 +97,12 @@ var myLineChart = new Chart(ctx, {
         label: function (tooltipItem, chart) {
           var datasetLabel =
             chart.datasets[tooltipItem.datasetIndex].label || "";
-          return datasetLabel + ": $" + number_format(tooltipItem.yLabel);
+          var value = tooltipItem.yLabel;
+
+          // Format the tooltip value with commas as thousand separators and two decimal places
+          value = "$" + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+
+          return datasetLabel + ": " + value;
         },
       },
     },

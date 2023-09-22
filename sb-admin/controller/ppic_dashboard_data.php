@@ -17,12 +17,12 @@ $sql_dashboard = "SELECT
              THEN Open_Amt ELSE 0 END) AS open_sales_this_month_price,
     SUM(CASE WHEN Docu_status = 'C' AND 
                    MONTH(Row_Del_date) = MONTH(CURDATE()) AND 
-                   YEAR(Row_Del_date) = YEAR(CURDATE())
+                   YEAR(Row_Del_date) = YEAR(CURDATE()) AND First_Name IN ('Vangie','Manolito')
              THEN 1 ELSE 0 END) AS closed_sales_this_month,
     SUM(CASE WHEN Docu_status = 'C' AND 
                    MONTH(Row_Del_date) = MONTH(CURDATE()) AND 
-                   YEAR(Row_Del_date) = YEAR(CURDATE())
-             THEN Open_Amt ELSE 0 END) AS closed_sales_this_month_price         
+                   YEAR(Row_Del_date) = YEAR(CURDATE()) AND First_Name IN ('Vangie','Manolito')
+             THEN Orig_Amt ELSE 0 END) AS closed_sales_this_month_price         
 FROM sales_order 
 WHERE Docu_status IN (?, ?);";
 
@@ -37,7 +37,7 @@ $sql_del_date_open = "SELECT
     Open_Qty, 
     Docu_status 
 FROM sales_order 
-WHERE Docu_status='O' 
+WHERE Docu_status='O'
       AND MONTH(Row_Del_date) = MONTH(CURDATE()) 
       AND YEAR(Row_Del_date) = YEAR(CURDATE());";
 
@@ -56,10 +56,29 @@ $sql_del_date_closed = "SELECT
     Open_Qty, 
     Docu_status 
 FROM sales_order 
-WHERE Docu_status='C' 
+WHERE Docu_status='C' AND First_Name IN ('Vangie','Manolito')
       AND MONTH(Row_Del_date) = MONTH(CURDATE()) 
       AND YEAR(Row_Del_date) = YEAR(CURDATE());";
 
+
+// prepared statement for getting the delivered data's per year
+$sql_chart = "SELECT ROUND(SUM(Orig_Amt), 2) AS Price, DATE_FORMAT(Row_Del_date, '%M') AS MonthName FROM sales_order WHERE Docu_status = 'C' AND First_Name IN ('Vangie', 'Manolito') AND YEAR(Row_Del_date) = YEAR(NOW()) GROUP BY MONTH(Row_Del_date);";
+
+// Prepare and execute the query for "Docu_status = 'O'"
+$stmt_chart = $pdo->prepare($sql_chart);
+$stmt_chart->execute();
+// Fetch the results into an associative array
+$results = $stmt_chart->fetchAll(PDO::FETCH_ASSOC);
+
+// Iterate through the results and store them in the $monthlyData array
+foreach ($results as $row) {
+      $monthName = $row['MonthName'];
+      $price = $row['Price'];
+
+      // Store the month name and price in the $monthlyData array
+      $monthlyData[] = array('Month' => $monthName, 'Price' => $price);
+}
+echo "<script>var monthlyData = " . json_encode($monthlyData) . ";</script>";
 // Prepare and execute the query for "Docu_status = 'C'"
 $stmt_del_date_closed = $pdo->prepare($sql_del_date_closed);
 $stmt_del_date_closed->execute();
