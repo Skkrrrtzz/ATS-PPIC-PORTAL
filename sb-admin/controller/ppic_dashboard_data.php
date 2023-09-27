@@ -3,10 +3,10 @@ session_start();
 
 // Create a prepared statement for the sales dashboard query
 $sql_dashboard = "SELECT 
-    SUM(CASE WHEN Docu_status = 'O' THEN 1 ELSE 0 END) AS open_sales, 
-    SUM(CASE WHEN Docu_status = 'C' THEN 1 ELSE 0 END) AS closed_sales,
+    SUM(CASE WHEN Docu_status = 'O' AND First_Name IN ('Vangie','Manolito') THEN 1 ELSE 0 END) AS open_sales, 
+    SUM(CASE WHEN Docu_status = 'C' AND First_Name IN ('Vangie','Manolito') THEN 1 ELSE 0 END) AS closed_sales,
     SUM(CASE WHEN Docu_status = 'O' AND Row_Del_date <= CURDATE() THEN 1 ELSE 0 END) AS delayed_sales,
-    SUM(CASE WHEN Docu_status = 'O' THEN Unit_price ELSE 0 END) AS open_sales_price,
+    SUM(CASE WHEN Docu_status = 'O' AND First_Name IN ('Vangie','Manolito') THEN Open_Amt ELSE 0 END) AS open_sales_price,
     SUM(CASE WHEN Docu_status = 'O' AND 
                    MONTH(Row_Del_date) = MONTH(CURDATE()) AND 
                    YEAR(Row_Del_date) = YEAR(CURDATE())

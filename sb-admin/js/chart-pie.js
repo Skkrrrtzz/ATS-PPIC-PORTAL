@@ -8,12 +8,12 @@ var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: "doughnut",
   data: {
-    labels: ["Open", "Delayed", "Closed"],
+    labels: ["Delayed", "Closed", "Open"],
     datasets: [
       {
         data: [55, 30, 15],
-        backgroundColor: ["#4e73df", "#1cc88a", "#36b9cc"],
-        hoverBackgroundColor: ["#2e59d9", "#17a673", "#2c9faf"],
+        backgroundColor: ["#e84c3c", "#1cc88a", "#f8c43c"],
+        hoverBackgroundColor: ["#e84c3c", "#17a673", "#f8c43c"],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
       },
     ],
@@ -31,8 +31,8 @@ var myPieChart = new Chart(ctx, {
       caretPadding: 10,
     },
     legend: {
-      display: false,
+      display: true,
     },
-    cutoutPercentage: 80,
+    cutoutPercentage: 50,
   },
 });

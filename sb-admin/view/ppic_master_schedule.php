@@ -1,5 +1,6 @@
 <?php require_once 'ppic_nav.php';
 include_once '../controller/commands.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,10 +29,17 @@ include_once '../controller/commands.php';
         .bg-pink {
             background-color: #ffcccc;
         }
+
+        /* td,
+        th {
+            border: 1px solid #dddddd;
+            padding: 16px;
+        } */
     </style>
 </head>
 
 <body id="master_schedule">
+
     <div class="container-fluid">
         <div class="card shadow my-2">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -40,10 +48,10 @@ include_once '../controller/commands.php';
                 </h4>
                 <!-- Buttons -->
                 <div class="my-0">
-                    <!-- Forecast Button -->
-                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#forecastModal">Edit Forecast</button>
+                    <!-- Edit Button -->
+                    <button type="button" class="btn btn-sm btn-warning edit-all-button">Edit Master Schedule</button>
                     <!-- Save Button -->
-                    <button type="submit" class="btn btn-success btn-sm float-end" id="saveChangesBtn" name="save_btn">Save Changes</button>
+                    <button type="submit" class="btn btn-success btn-sm float-end save-button" id="saveChangesBtn" name="save_btn">Save Changes</button>
                     <!-- Upload Button -->
                     <input type="file" class="form-control-file d-none" id="pdfUpload" accept=".pdf">
                     <label for="pdfUpload" class="btn btn-primary btn-sm mt-2" id="uploadButton">Upload PDF</label>
@@ -53,133 +61,95 @@ include_once '../controller/commands.php';
             </div>
             <div id="message"></div>
             <div class="card-body" style="height: 550px; overflow-y: auto;">
-                <div class=" table-responsive">
-                    <table class=" table-bordered" style="width: 100%;">
-                        <thead class="text-center text-dark">
+
+                <div class="table-responsive">
+                    <table class=" table-bordered text-center">
+                        <thead class="table-dark">
                             <tr>
-                                <th class="h3 fw-bold bg-blue-60" rowspan="4" width='20%'>Product</th>
-                                <th class="h4 m-2 fw-bold bg-light">Month</th>
-                                <th class="h4 m-2 fw-bold bg-blue-80" colspan="4" name="curmonth"><?php echo $currentMonthName; ?></th>
-                                <th class="h4 m-2 fw-bold bg-gray-60" colspan="5" name="nxtmonth"><?php echo $nextMonthName; ?></th>
+                                <th rowspan="4">Product</th>
+                                <th>Month</th>
+                                <td colspan="4" class="bg-blue-80 text-dark"><?= $currentMonthName; ?></td>
+                                <td colspan="5" class="bg-gray-60 text-dark"><?= $nextMonthName; ?></td>
                             </tr>
                             <tr>
-                                <th class="bg-light fw-bold">WW</th>
-                                <?php foreach ($weekNumbers as $week) {
+                                <th>Week</th>
+                                <?php foreach ($weekNumbers as $week) : ?>
+                                    <?php
                                     $sunday = $dateRanges[$week]['Sunday'];
-                                    // Check if the week's Sunday date's month matches the current month
                                     $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
                                     $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
-                                    echo "<th class='$class fw-bold' name='week'>Week $week</th>";
-                                } ?>
+                                    ?>
+                                    <td class="<?= $class; ?> text-dark" name="week" data-product="<?php echo $product; ?>" data-week="<?php echo $week; ?>">Week <?= $week; ?></td>
+                                <?php endforeach; ?>
                             </tr>
-
                             <tr>
-                                <th class="bg-light fw-bold">Start Build Plan</th>
-                                <?php foreach ($weekNumbers as $week) {
+                                <th>Start Build Plan</th>
+                                <?php foreach ($weekNumbers as $week) : ?>
+                                    <?php
                                     $sunday = $dateRanges[$week]['Sunday'];
-                                    // Check if the date's month matches the current month
                                     $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
-                                    $class = $isCurrentMonth ? 'bg-blue-60' : 'bg-gray-80';
-                                    echo "<th class='$class fw-bold' name='wkstart'>$sunday</th>";
-                                } ?>
+                                    $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
+                                    ?>
+                                    <td class="<?= $class; ?> text-dark" name="wkstart" data-product="<?php echo $product; ?>"><?= $sunday; ?></td>
+                                <?php endforeach; ?>
                             </tr>
                             <tr>
-                                <th class="bg-light">End Build Date</th>
-                                <?php
-                                $saturdaysCount = 0; // Initialize a variable to count Saturdays
-                                foreach ($weekNumbers as $week) {
+                                <th>End Build Date</th>
+                                <?php foreach ($weekNumbers as $week) : ?>
+                                    <?php
                                     $saturday = $dateRanges[$week]['Saturday'];
-                                    // Check if the date's month matches the current month
                                     $isCurrentMonth = (date('F', strtotime($saturday)) === $currentMonthName);
-                                    $class = $isCurrentMonth ? 'bg-blue-60' : 'bg-gray-80';
-                                    echo "<th class='$class' name='wkend'>$saturday</th>";
-                                    // Check if $saturday falls on a Saturday
-                                    if (date('l', strtotime($saturday)) === 'Saturday') {
-                                        $saturdaysCount++;
-                                    }
-                                }
-                                ?>
+                                    $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
+                                    ?>
+                                    <td class="<?= $class; ?> text-dark" name="wkend" data-product="<?php echo $product; ?>"><?= $saturday; ?></td>
+                                <?php endforeach; ?>
                             </tr>
                         </thead>
                         <?php
                         foreach ($products as $product) {
-                        }
-                        $tbodyId = 'tbody_' . $product;
-                        $build_qtyId = 'prod_build_qty' . $product;
-                        $product_noId = 'product_no' . $product;
-                        $ship_qtyId = 'shipment_qty' . $product;
-                        $boh_eohId = 'boh_eoh' . $product;
-                        $actual_batch_outputId = 'actual_batch_output' . $product;
-                        $delayId = 'delay' . $product;
                         ?>
-                        <tbody class="text-center text-dark" id=<?php echo $tbodyId; ?>'>
-                            <tr>
-                                <td rowspan="7" class="h3 fw-bold" name="product"><?php echo $product; ?></td>
-                            </tr>
-                            <tr>
-                                <td>Prod Build Qty</td>
-                                <?php
-                                for ($i = 0; $i < $saturdaysCount; $i++) {
-                                    echo  "<td contenteditable='true' id='$build_qtyId' name='prod_build_qty'></td>";
-                                }
-                                ?>
-                            </tr>
-                            <tr>
-                                <td><?php echo $product; ?> No.</td>
-                                <?php
-                                for ($i = 0; $i < $saturdaysCount; $i++) {
-                                    $firstEditableAdded = false;
-                                    for ($i = 0; $i < $saturdaysCount; $i++) {
-                                        if (!$firstEditableAdded) {
-                                            echo "<td contenteditable='true' id='$product_noId' name='prod_no'></td>";
-                                            $firstEditableAdded = true;
-                                        } else {
-                                            echo "<td id='$product_noId' name='prod_no'></td>";
-                                        }
-                                    }
-                                }
-                                ?>
-                            </tr>
-                            <tr>
-                                <td>Shipment Qty</td>
-                                <?php
-                                for ($i = 0; $i < $saturdaysCount; $i++) {
-                                    echo "<td contenteditable='true' id='$ship_qtyId' name='ship_qty'></td>";
-                                }
-                                ?>
-                            </tr>
-                            <tr>
-                                <td>BOH/EOH</td>
-                                <?php
-                                $firstEditableAdded = false;
-                                for ($i = 0; $i < $saturdaysCount; $i++) {
-                                    if (!$firstEditableAdded) {
-                                        echo "<td contenteditable='true' id='$boh_eohId' name='boh_eoh'></td>";
-                                        $firstEditableAdded = true;
-                                    } else {
-                                        echo "<td id='$boh_eohId'></td>";
-                                    }
-                                }
-                                ?>
-                            </tr>
-                            <tr>
-                                <td>Actual Batch Output</td>
-                                <?php
-                                for ($i = 0; $i < $saturdaysCount; $i++) {
-                                    echo "<td contenteditable='true' id='$actual_batch_outputId' name='act_batch_output'></td>";
-                                }
-                                ?>
-                            </tr>
-                            <tr>
-                                <td>Delay</td>
-                                <?php
-                                for ($i = 0; $i < $saturdaysCount; $i++) {
-                                    echo "<td id='$delayId' name='delay'></td>";
-                                }
-                                ?>
-                            </tr>
-                        </tbody>
-                        <?php  ?>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="7" data-product="<?php echo $product; ?>" data-month="<?php echo $currentMonthName; ?>">
+                                        <?php echo $product; ?>
+                                    </td>
+                                    <th>Prod Build Qty</th>
+                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                        <td class="edit-cell" name="prod_build_qty" data-product="<?php echo $product; ?>" data-week="<?php echo $week; ?>"></td>
+                                    <?php endfor; ?>
+                                </tr>
+                                <tr>
+                                    <th><?php echo $product; ?> No.</th>
+                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                        <td class="edit-cell" name="product_no" data-product="<?php echo $product; ?>"></td>
+                                    <?php endfor; ?>
+                                </tr>
+                                <tr>
+                                    <th>Shipment Qty</th>
+                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                        <td class="edit-cell" name="ship_qty" data-product="<?php echo $product; ?>"></td>
+                                    <?php endfor; ?>
+                                </tr>
+                                <tr>
+                                    <th>BOH/EOH</th>
+                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                        <td class="edit-cell" name="boh_eoh" data-product="<?php echo $product; ?>"></td>
+                                    <?php endfor; ?>
+                                </tr>
+                                <tr>
+                                    <th>Actual Batch Output</th>
+                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                        <td class="edit-cell" name="act_batch_output" data-product="<?php echo $product; ?>"></td>
+                                    <?php endfor; ?>
+                                </tr>
+                                <tr>
+                                    <th>Delay</th>
+                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                        <td class="edit-cell" name="delay" data-product="<?php echo $product; ?>"></td>
+                                    <?php endfor; ?>
+                                </tr>
+                            </tbody>
+                        <?php } ?>
                     </table>
                 </div>
             </div>
@@ -204,22 +174,16 @@ include_once '../controller/commands.php';
         </div>
     </div>
     <!-- Modal for editing Forecast -->
-    <div class="modal fade" id="forecastModal" tabindex="-1" aria-labelledby="forecastModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="masterSchedModal" tabindex="-1" aria-labelledby="masterSchedLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-light">
-                    <h5 class="modal-title text-warning" id="forecastModalLabel">Editing Forecast</h5>
+                    <h5 class="modal-title text-warning" id="masterSchedLabel">Editing Master Schedule</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table>
-                        <thead>
-                            <tr></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -228,136 +192,181 @@ include_once '../controller/commands.php';
             </div>
         </div>
     </div>
+    </div>
     <script>
-        $(document).ready(function() {
-            function isWithinDateRange(editedValue, curMonth, dateRange) {
-                // Split the date range into Sunday and Saturday dates
-                let sundayDate = dateRange["Sunday"];
-                let saturdayDate = dateRange["Saturday"];
+        document.addEventListener('DOMContentLoaded', function() {
 
-                // Convert the Sunday and Saturday dates to JavaScript Date objects
-                let sundayDateObj = new Date(sundayDate);
-                let saturdayDateObj = new Date(saturdayDate);
+            const editAllButton = document.querySelector('.edit-all-button');
+            const saveButton = document.querySelector('#saveChangesBtn');
+            const editCells = document.querySelectorAll('.edit-cell');
+            // Disable the save button
+            saveButton.disabled = true;
 
-                // Check if the current month matches the specified month
-                if (curMonth !== sundayDateObj.toLocaleString('en-US', {
-                        month: 'long'
-                    })) {
-                    return false;
+            editAllButton.addEventListener('click', function() {
+                const isEditing = editCells[0].classList.contains('edit-mode');
+
+                if (isEditing) {
+                    // Save the edited data and exit editing mode for all cells
+                    editCells.forEach(cell => {
+                        cell.textContent = cell.querySelector('input').value;
+                    });
+                    editCells.forEach(cell => {
+                        cell.classList.remove('edit-mode');
+                    });
+                    // Disable the save button
+                    saveButton.disabled = true;
+                } else {
+                    // Enter editing mode with input fields for all cells
+                    editCells.forEach(cell => {
+                        const text = cell.textContent;
+                        cell.innerHTML = '<input class="form-control form-control-sm" type="number" value="' + text + '" inputmode="numeric">';
+                        cell.classList.add('edit-mode');
+                    });
+                    // Enable the save button when entering edit mode
+                    saveButton.disabled = false;
                 }
+            });
 
-                // Convert the edited value to a number (assuming it's a numeric value)
-                let editedValueNumber = parseFloat(editedValue);
+            saveButton.addEventListener('click', function() {
+                // Create an object to store the values with identifiers
+                const editedValues = {};
 
-                // Check if the edited value is a valid number
-                if (isNaN(editedValueNumber)) {
-                    return false;
-                }
+                editCells.forEach(cell => {
+                    const name = cell.getAttribute('name');
+                    const value = cell.querySelector('input').value;
+                    const productName = cell.getAttribute('data-product'); // Get the associated product name
+                    const monthName = cell.closest('tbody').querySelector('td[data-month]').getAttribute('data-month'); // Get the associated month name
+                    const week = cell.getAttribute('data-week'); // Get the associated week
+                    console.log(week);
+                    const sundayDate = cell.closest('tbody').querySelector(`td[data-week="${week}"][name="wkstart"]`).textContent; // Get the Sunday date
+                    const saturdayDate = cell.closest('tbody').querySelector(`td[data-week="${week}"][name="wkend"]`).textContent; // Get the Saturday date
 
-                // Check if the edited value is within the range of 0 and 100 (or adjust as needed)
-                if (editedValueNumber < 0 || editedValueNumber > 100) {
-                    return false;
-                }
-
-                // Check if the edited value is within the date range
-                if (sundayDateObj <= saturdayDateObj) {
-                    // If Sunday is before or the same as Saturday, check if the edited value
-                    // falls within the range of Sunday and Saturday dates
-                    let editedDateObj = new Date(sundayDate);
-                    editedDateObj.setDate(editedDateObj.getDate() + 1); // Start from Sunday
-
-                    while (editedDateObj <= saturdayDateObj) {
-                        if (editedDateObj.toLocaleDateString() === sundayDateObj.toLocaleDateString()) {
-                            // If the edited date matches a date within the range, return true
-                            return true;
-                        }
-                        editedDateObj.setDate(editedDateObj.getDate() + 1); // Move to the next day
+                    if (!editedValues[productName]) {
+                        editedValues[productName] = {}; // Initialize an object for the product name if it doesn't exist
                     }
-                }
 
-                // If none of the conditions matched, return false
-                return false;
-            }
+                    if (!editedValues[productName][monthName]) {
+                        editedValues[productName][monthName] = {}; // Initialize an object for the month name if it doesn't exist within the product
+                    }
 
-            // Disable the save button initially
-            $("#saveChangesBtn").prop("disabled", true);
+                    if (!editedValues[productName][monthName][week]) {
+                        editedValues[productName][monthName][week] = {}; // Initialize an object for the week if it doesn't exist within the product and month name
+                    }
 
-            // Create an array to store the edited data
-            let editedData = [];
+                    // Add month name, week, and date information to the object
+                    editedValues[productName][monthName][week].monthName = monthName;
+                    editedValues[productName][monthName][week].sundayDate = sundayDate;
+                    editedValues[productName][monthName][week].saturdayDate = saturdayDate;
 
-            // Define the expected month, week, and date range
-            let curMonth = "<?php echo $currentMonthName; ?>";
-            let weekNumbers = <?php echo json_encode($weekNumbers); ?>;
-            let dateRanges = <?php echo json_encode($dateRanges); ?>;
+                    if (!editedValues[productName][monthName][week][name]) {
+                        editedValues[productName][monthName][week][name] = []; // Initialize an array for the name if it doesn't exist within the product, month name, and week
+                    }
 
-            // Add event listener for detecting changes in the table cells
-            $("tbody tr td").on("input", function() {
-                // Enable the save button when any cell is edited
-                $("#saveChangesBtn").prop("disabled", false);
+                    editedValues[productName][monthName][week][name].push(value); // Add the value to the array
+                });
 
-                // Get the edited cell's content
-                let editedCellValue = $(this).text();
-                // Get the ID attribute of the edited cell (which corresponds to the product name)
-                let productId = $(this).attr("id");
-                let cellIndex = $(this).index();
-                // Find the corresponding week number based on the product ID
-                let weekNumber = weekNumbers[cellIndex];
+                console.log('Sending data:', editedValues);
 
-                // Add debugging statements
-                console.log("productId:", productId);
-                console.log("weekNumber:", weekNumber);
-                console.log("dateRange:", dateRanges[weekNumber]);
-                console.log("Value:", editedCellValue);
-                console.log("Index:", cellIndex);
-                // Get the date range for the corresponding week number
-                let dateRange = dateRanges[weekNumber];
-
-                // Check if the edited value is within the expected month and date range
-                if (isWithinDateRange(editedCellValue, curMonth, dateRange)) {
-                    // Get the ID attribute of the edited cell (which corresponds to the product name)
-                    let productId = $(this).attr("id");
-
-                    // Push the edited data to the array
-                    editedData.push({
-                        curMonth: curMonth,
-                        week: week,
-                        dateRange: dateRange,
-                        product: productId,
-                        value: editedCellValue
-                    });
-                } else {
-                    alert("Invalid value for the selected month, week, or date range.");
-                    // You can choose to revert the cell value to its previous state here
-                }
-            });
-
-            // Add event listener for saving changes
-            $("#saveChangesBtn").click(function() {
-                // Check if any data has been edited
-                if (editedData.length > 0) {
-                    // Send the edited data to the PHP script using AJAX
-                    $.ajax({
-                        url: "../controller/commands.php",
-                        method: "POST",
-                        data: {
-                            data: editedData
+                fetch('../controller/upload_data.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
                         },
-                        success: function(response) {
-                            // Handle the success response
-                            console.log(response);
-                            alert("Data updated successfully!");
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle the error response
-                            console.log(xhr.responseText);
-                            alert("Error: " + xhr.responseText);
+                        body: JSON.stringify({
+                            editedValues: editedValues
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            console.log('Data inserted successfully.');
+                        } else {
+                            console.error('Error inserting data.');
                         }
+                    })
+                    .catch(error => {
+                        console.error('An error occurred:', error);
                     });
-                } else {
-                    alert("No changes to save.");
-                }
+
+                // Hide the "Save" button after saving
+                saveButton.style.display = 'none';
             });
+
         });
+
+
+        // $(document).ready(function() {
+
+        //     // Disable the save button initially
+        //     $("#saveChangesBtn").prop("disabled", true);
+
+        //     // Create an array to store the edited data
+        //     let editedData = [];
+
+        //     // Parse the JSON-encoded string to get a JavaScript array
+        //     let weekNumbers = <?php echo json_encode($weekNumbers); ?>;
+        //     let dateRanges = <?php echo json_encode($dateRanges); ?>;
+
+        //     // Add event listener for detecting changes in the table cells
+        //     $("tbody tr td").on("input", function() {
+        //         // Enable the save button when any cell is edited
+        //         $("#saveChangesBtn").prop("disabled", false);
+
+        //         // Get the edited cell's content
+        //         let editedCellValue = $(this).text();
+        //         // Get the ID attribute of the edited cell (which corresponds to the product name)
+        //         let productId = $(this).attr("id");
+        //         let cellIndex = $(this).index() - 1;
+        //         // Find the corresponding week number based on the product ID
+        //         let weekNumber = weekNumbers[cellIndex];
+
+        //         // Create an object to represent the edited data
+        //         let editedItem = {
+        //             productId: productId,
+        //             weekNumber: weekNumber,
+        //             dateRange: dateRanges[weekNumber],
+        //             value: editedCellValue
+        //         };
+
+        //         // Push the edited data object into the editedData array
+        //         editedData.push(editedItem);
+
+        //         // Add debugging statements (optional)
+        //         console.log("productId:", productId);
+        //         console.log("weekNumber:", weekNumber);
+        //         console.log("dateRange:", dateRanges[weekNumber]);
+        //         console.log("Value:", editedCellValue);
+        //         // You can now access the edited data in the editedData array for further processing or saving.
+        //     });
+
+
+        //     // Add event listener for saving changes
+        //     $("#saveChangesBtn").click(function() {
+        //         // Check if any data has been edited
+        //         if (editedData.length > 0) {
+        //             // Send the edited data to the PHP script using AJAX
+        //             $.ajax({
+        //                 url: "../controller/commands.php",
+        //                 method: "POST",
+        //                 data: {
+        //                     data: editedData
+        //                 },
+        //                 success: function(response) {
+        //                     // Handle the success response
+        //                     console.log(response);
+        //                     alert("Data updated successfully!");
+        //                 },
+        //                 error: function(xhr, status, error) {
+        //                     // Handle the error response
+        //                     console.log(xhr.responseText);
+        //                     alert("Error: " + xhr.responseText);
+        //                 }
+        //             });
+        //         } else {
+        //             alert("No changes to save.");
+        //         }
+        //     });
+        // });
 
 
 

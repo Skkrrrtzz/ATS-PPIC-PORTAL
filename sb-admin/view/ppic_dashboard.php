@@ -152,8 +152,24 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-bold text-primary">Open Sales</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-pie">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-chevron-up"></i>
+    </a>
     <!--Open Delivery this Month Modal -->
     <div class="modal fade" id="openSalesModal" tabindex="-1" aria-labelledby="openSalesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -287,6 +303,7 @@
         </div>
     </div>
     <script src="../js/chart-area.js"></script>
+    <script src="../js/chart-pie.js"></script>
 
 </body>
 
