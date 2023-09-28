@@ -9193,6 +9193,7 @@ a:focus {
 }
 #wrapper {
   display: flex;
+  margin-top: 3.5rem;
 }
 #wrapper #content-wrapper {
   background-color: #f8f9fc;
@@ -9472,7 +9473,7 @@ a:focus {
   width: 1rem;
   text-align: center;
   float: right;
-  vertical-align: 0;
+  vertical-align: 50;
   border: 0;
   font-weight: 900;
   content: "\f105";
@@ -9780,6 +9781,29 @@ a:focus {
 .sidebar .sidebar-card p {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
+}
+/* Hide the ppic-name <a> tag on small screens (e.g., screens with a max-width of 576px) */
+@media (max-width: 320px) {
+  .ppic-name {
+    width: 0%;
+    overflow: hidden;
+  }
+}
+
+/* Hide the ppic-name <a> tag on medium screens (e.g., screens with a max-width of 768px) */
+@media (max-width: 375px) {
+  .ppic-name {
+    width: 0%;
+    overflow: hidden;
+  }
+}
+
+/* Hide the ppic-name <a> tag on large screens (e.g., screens with a max-width of 992px) */
+@media (max-width: 425px) {
+  .ppic-name {
+    width: 0%;
+    overflow: hidden;
+  }
 }
 @media (min-width: 768px) {
   .sidebar {

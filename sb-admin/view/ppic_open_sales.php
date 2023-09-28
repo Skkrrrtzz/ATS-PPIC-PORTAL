@@ -42,127 +42,118 @@
 </head>
 
 <body id="openSales">
-  <!-- Page Wrapper -->
-  <div id="wrapper">
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-      <!-- Main Content -->
-      <!-- Begin Page Content -->
-      <div class="container-fluid">
-        <!-- OPEN SALES TABLE -->
-        <div class="card shadow my-2">
-          <div class="card-header">
-            <h4 class="m-0 font-weight-bold text-primary">
-              Sales Orders
-            </h4>
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <!-- OPEN SALES TABLE -->
+    <div class="card shadow my-2">
+      <div class="card-header">
+        <h4 class="m-0 font-weight-bold text-primary">
+          Sales Orders
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="m-1">
+            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-upload"></i> Upload Excel</button>
           </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <div class="m-1">
-                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-upload"></i> Upload Excel</button>
-              </div>
-              <table class="table table-bordered table-hover text-nowrap" width="100%" cellspacing="0" id="sales_orders">
-                <thead class="bg-gray-300 text-dark">
-                  <tr>
-                    <th>ID</th>
-                    <th>BP Reference No.</th>
-                    <th>Posting Date</th>
-                    <th>Row Delivery Date</th>
-                    <th>Customer Part No</th>
-                    <th>Item/Service Description</th>
-                    <th>Qty</th>
-                    <th>Open Qty</th>
-                    <th>Remarks</th>
-                    <!-- <th>No.</th> -->
-                    <th>Status</th>
-                    <th>Internal Number</th>
-                    <th>Document Number</th>
-                    <th>Customer/Vendor Code</th>
-                    <th>Customer/Vendor Name</th>
-                    <th>Item No</th>
-                    <th>Customer/Vendor Cat.No.</th>
-                    <th>Inventory UoM</th>
-                    <th>Purchasing UoM</th>
-                    <th>WareHouse Code</th>
-                    <th>Price Currency</th>
-                    <th>Distribution Rule</th>
-                    <th>Unit price</th>
-                    <th>Orig Amt</th>
-                    <th>Open Amt</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Sales Emp Name</th>
-                    <th>Pay Terms Code</th>
-                    <th>Payment Terms Code</th>
-                    <th>Ref Number</th>
-                    <th>Customer PO No</th>
-                    <th>Delivered Qty</th>
-                    <th>Add'l txt</th>
-                    <th>Free txt</th>
-                    <th>Contact Person</th>
-                  </tr>
-                </thead>
-                <tfoot class="bg-gray-300 text-dark">
-                  <tr>
-                    <th>ID</th>
-                    <th>BP Reference No.</th>
-                    <th>Posting Date</th>
-                    <th>Row Delivery Date</th>
-                    <th>Customer Part No</th>
-                    <th>Item/Service Description</th>
-                    <th>Qty</th>
-                    <th>Open Qty</th>
-                    <th>Remarks</th>
-                    <!-- <th>No.</th> -->
-                    <th>Status</th>
-                    <th>Internal Number</th>
-                    <th>Document Number</th>
-                    <th>Customer/Vendor Code</th>
-                    <th>Customer/Vendor Name</th>
-                    <th>Item No</th>
-                    <th>Customer/Vendor Cat.No.</th>
-                    <th>Inventory UoM</th>
-                    <th>Purchasing UoM</th>
-                    <th>WareHouse Code</th>
-                    <th>Price Currency</th>
-                    <th>Distribution Rule</th>
-                    <th>Unit price</th>
-                    <th>Orig Amt</th>
-                    <th>Open Amt</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Sales Emp Name</th>
-                    <th>Pay Terms Code</th>
-                    <th>Payment Terms Code</th>
-                    <th>Ref Number</th>
-                    <th>Customer PO No</th>
-                    <th>Delivered Qty</th>
-                    <th>Add'l txt</th>
-                    <th>Free txt</th>
-                    <th>Contact Person</th>
-                  </tr>
-                </tfoot>
-                <tbody class=" border border-dark">
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <table class="table table-bordered table-hover text-nowrap" width="100%" cellspacing="0" id="sales_orders">
+            <thead class="bg-gray-300 text-dark">
+              <tr>
+                <th>ID</th>
+                <th>BP Reference No.</th>
+                <th>Posting Date</th>
+                <th>Row Delivery Date</th>
+                <th>Customer Part No</th>
+                <th>Item/Service Description</th>
+                <th>Qty</th>
+                <th>Open Qty</th>
+                <th>Remarks</th>
+                <!-- <th>No.</th> -->
+                <th>Status</th>
+                <th>Internal Number</th>
+                <th>Document Number</th>
+                <th>Customer/Vendor Code</th>
+                <th>Customer/Vendor Name</th>
+                <th>Item No</th>
+                <th>Customer/Vendor Cat.No.</th>
+                <th>Inventory UoM</th>
+                <th>Purchasing UoM</th>
+                <th>WareHouse Code</th>
+                <th>Price Currency</th>
+                <th>Distribution Rule</th>
+                <th>Unit price</th>
+                <th>Orig Amt</th>
+                <th>Open Amt</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Sales Emp Name</th>
+                <th>Pay Terms Code</th>
+                <th>Payment Terms Code</th>
+                <th>Ref Number</th>
+                <th>Customer PO No</th>
+                <th>Delivered Qty</th>
+                <th>Add'l txt</th>
+                <th>Free txt</th>
+                <th>Contact Person</th>
+              </tr>
+            </thead>
+            <tfoot class="bg-gray-300 text-dark">
+              <tr>
+                <th>ID</th>
+                <th>BP Reference No.</th>
+                <th>Posting Date</th>
+                <th>Row Delivery Date</th>
+                <th>Customer Part No</th>
+                <th>Item/Service Description</th>
+                <th>Qty</th>
+                <th>Open Qty</th>
+                <th>Remarks</th>
+                <!-- <th>No.</th> -->
+                <th>Status</th>
+                <th>Internal Number</th>
+                <th>Document Number</th>
+                <th>Customer/Vendor Code</th>
+                <th>Customer/Vendor Name</th>
+                <th>Item No</th>
+                <th>Customer/Vendor Cat.No.</th>
+                <th>Inventory UoM</th>
+                <th>Purchasing UoM</th>
+                <th>WareHouse Code</th>
+                <th>Price Currency</th>
+                <th>Distribution Rule</th>
+                <th>Unit price</th>
+                <th>Orig Amt</th>
+                <th>Open Amt</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Sales Emp Name</th>
+                <th>Pay Terms Code</th>
+                <th>Payment Terms Code</th>
+                <th>Ref Number</th>
+                <th>Customer PO No</th>
+                <th>Delivered Qty</th>
+                <th>Add'l txt</th>
+                <th>Free txt</th>
+                <th>Contact Person</th>
+              </tr>
+            </tfoot>
+            <tbody class=" border border-dark">
+            </tbody>
+          </table>
         </div>
       </div>
-      <!-- End of Main Content -->
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <!-- <span>Copyright &copy; Your Website 2020</span> -->
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
     </div>
-    <!-- End of Content Wrapper -->
   </div>
-  <!-- End of Page Wrapper -->
+  <!-- End of Main Content -->
+  <!-- Footer -->
+  <footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+      <div class="copyright text-center my-auto">
+        <!-- <span>Copyright &copy; Your Website 2020</span> -->
+      </div>
+    </div>
+  </footer>
+  <!-- End of Footer -->
   <!-- Modal for uploading Excel file -->
   <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

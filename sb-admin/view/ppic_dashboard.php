@@ -1,5 +1,5 @@
-<?php require_once 'ppic_nav.php';
-
+<?php
+require_once 'ppic_nav.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -303,6 +303,11 @@
         </div>
     </div>
     <script src="../js/chart-area.js"></script>
+    <script>
+        const openSalesCount = <?php echo $openSalesCount; ?>;
+        const closedSalesCount = <?php echo $closedSalesCount; ?>;
+        const delayedSalesCount = <?php echo $delayedSalesCount; ?>;
+    </script>
     <script src="../js/chart-pie.js"></script>
 
 </body>

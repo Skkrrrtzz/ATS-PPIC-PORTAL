@@ -11,7 +11,7 @@ var myPieChart = new Chart(ctx, {
     labels: ["Delayed", "Closed", "Open"],
     datasets: [
       {
-        data: [55, 30, 15],
+        data: [delayedSalesCount, closedSalesCount, openSalesCount],
         backgroundColor: ["#e84c3c", "#1cc88a", "#f8c43c"],
         hoverBackgroundColor: ["#e84c3c", "#17a673", "#f8c43c"],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -33,6 +33,6 @@ var myPieChart = new Chart(ctx, {
     legend: {
       display: true,
     },
-    cutoutPercentage: 50,
+    cutoutPercentage: 60,
   },
 });
