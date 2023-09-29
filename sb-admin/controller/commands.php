@@ -59,6 +59,7 @@ $nextMonthName = $endOfNextMonth->format('F');
 
 list($weekNumbers, $dateRanges) = calculateWeeksAndDates($currentMonthName, $endOfNextMonth);
 $saturdaysCount = 0;
+$week = 0;
 foreach ($weekNumbers as $week) {
     if (date('l', strtotime($dateRanges[$week]['Saturday'])) === 'Saturday') {
         $saturdaysCount++;

@@ -61,96 +61,116 @@ include_once '../controller/commands.php';
             </div>
             <div id="message"></div>
             <div class="card-body" style="height: 550px; overflow-y: auto;">
-
                 <div class="table-responsive">
-                    <table class=" table-bordered text-center">
-                        <thead class="table-dark">
-                            <tr>
-                                <th rowspan="4">Product</th>
-                                <th>Month</th>
-                                <td colspan="4" class="bg-blue-80 text-dark"><?= $currentMonthName; ?></td>
-                                <td colspan="5" class="bg-gray-60 text-dark"><?= $nextMonthName; ?></td>
-                            </tr>
-                            <tr>
-                                <th>Week</th>
-                                <?php foreach ($weekNumbers as $week) : ?>
-                                    <?php
-                                    $sunday = $dateRanges[$week]['Sunday'];
-                                    $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
-                                    $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
-                                    ?>
-                                    <td class="<?= $class; ?> text-dark" name="week" data-product="<?php echo $product; ?>" data-week="<?php echo $week; ?>">Week <?= $week; ?></td>
-                                <?php endforeach; ?>
-                            </tr>
-                            <tr>
-                                <th>Start Build Plan</th>
-                                <?php foreach ($weekNumbers as $week) : ?>
-                                    <?php
-                                    $sunday = $dateRanges[$week]['Sunday'];
-                                    $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
-                                    $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
-                                    ?>
-                                    <td class="<?= $class; ?> text-dark" name="wkstart" data-product="<?php echo $product; ?>"><?= $sunday; ?></td>
-                                <?php endforeach; ?>
-                            </tr>
-                            <tr>
-                                <th>End Build Date</th>
-                                <?php foreach ($weekNumbers as $week) : ?>
-                                    <?php
-                                    $saturday = $dateRanges[$week]['Saturday'];
-                                    $isCurrentMonth = (date('F', strtotime($saturday)) === $currentMonthName);
-                                    $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
-                                    ?>
-                                    <td class="<?= $class; ?> text-dark" name="wkend" data-product="<?php echo $product; ?>"><?= $saturday; ?></td>
-                                <?php endforeach; ?>
-                            </tr>
-                        </thead>
-                        <?php
-                        foreach ($products as $product) {
-                        ?>
-                            <tbody>
+                    <form action="../controller/upload_data.php" method="post">
+
+                        <input type="hidden" name="monthnow" value="<?= $currentMonthName; ?>">
+                        <input type="hidden" name="monthnxt" value="<?= $nextMonthName; ?>">
+
+                        <table class=" table-bordered text-center">
+                            <thead class="table-dark">
                                 <tr>
-                                    <td rowspan="7" data-product="<?php echo $product; ?>" data-month="<?php echo $currentMonthName; ?>">
-                                        <?php echo $product; ?>
-                                    </td>
-                                    <th>Prod Build Qty</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="edit-cell" name="prod_build_qty" data-product="<?php echo $product; ?>" data-week="<?php echo $week; ?>"></td>
-                                    <?php endfor; ?>
+                                    <th rowspan="4">Product</th>
+                                    <th>Month</th>
+                                    <td colspan="4" class="bg-blue-80 text-dark" name="monthnow"><?= $currentMonthName; ?></td>
+                                    <td colspan="5" class="bg-gray-60 text-dark" name="monthnxt"><?= $nextMonthName; ?></td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo $product; ?> No.</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="edit-cell" name="product_no" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
+                                    <th>Week</th>
+                                    <?php foreach ($weekNumbers as $week) : ?>
+                                        <?php
+                                        $sunday = $dateRanges[$week]['Sunday'];
+                                        $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
+                                        $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
+                                        ?>
+                                        <td class="<?= $class; ?> text-dark">
+                                            Week <?= $week; ?>
+                                            <input type="hidden" name="week[]" value="<?= $week; ?>">
+                                        </td>
+                                    <?php endforeach; ?>
                                 </tr>
                                 <tr>
-                                    <th>Shipment Qty</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="edit-cell" name="ship_qty" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
+                                    <th>Start Build Plan</th>
+                                    <?php foreach ($weekNumbers as $week) : ?>
+                                        <?php
+                                        $sunday = $dateRanges[$week]['Sunday'];
+                                        $isCurrentMonth = (date('F', strtotime($sunday)) === $currentMonthName);
+                                        $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
+                                        ?>
+                                        <td class="<?= $class; ?> text-dark"><?= $sunday; ?>
+                                            <input type="hidden" name="wkstart[]" value="<?= $sunday; ?>">
+                                        </td>
+                                    <?php endforeach; ?>
                                 </tr>
                                 <tr>
-                                    <th>BOH/EOH</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="edit-cell" name="boh_eoh" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
+                                    <th>End Build Date</th>
+                                    <?php foreach ($weekNumbers as $week) : ?>
+                                        <?php
+                                        $saturday = $dateRanges[$week]['Saturday'];
+                                        $isCurrentMonth = (date('F', strtotime($saturday)) === $currentMonthName);
+                                        $class = $isCurrentMonth ? 'bg-blue-80' : 'bg-gray-60';
+                                        ?>
+                                        <td class="<?= $class; ?> text-dark"><?= $saturday; ?>
+                                            <input type="hidden" name="wkend[]" value="<?= $saturday; ?>">
+                                        </td>
+                                    <?php endforeach; ?>
                                 </tr>
-                                <tr>
-                                    <th>Actual Batch Output</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="edit-cell" name="act_batch_output" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
-                                </tr>
-                                <tr>
-                                    <th>Delay</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="edit-cell" name="delay" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
-                                </tr>
-                            </tbody>
-                        <?php } ?>
-                    </table>
+                            </thead>
+                            <?php
+                            foreach ($products as $product) {
+                            ?>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="7" data-product="<?php echo $product; ?>" name="product" data-month="<?php echo $currentMonthName; ?> ">
+                                            <?php echo $product; ?>
+                                        </td>
+                                        <input type="hidden" name="product[]" value="<?= $product; ?>">
+                                        <th>Prod Build Qty</th>
+                                        <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                            <td class="edit-cell" name="prod_build_qty" data-product="<?php echo $product; ?>">
+                                                <input type="text" name="prod_build_qty[<?= $product; ?>][]" value="">
+                                            </td>
+                                        <?php endfor; ?>
+                                    </tr>
+                                    <tr>
+                                        <th><?php echo $product; ?> No.</th>
+                                        <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                            <td class="edit-cell" data-product="<?= $product; ?>">
+                                                <input type="text" name="product_no[<?= $product; ?>][]" value="">
+                                            </td>
+                                        <?php endfor; ?>
+                                    </tr>
+                                    <tr>
+                                        <th>Shipment Qty</th>
+                                        <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                            <td class="edit-cell" name="ship_qty" data-product="<?php echo $product; ?>">
+                                                <input type="text" name="ship_qty[<?= $product; ?>][]" value="">
+                                            </td>
+                                        <?php endfor; ?>
+                                    </tr>
+                                    <tr>
+                                        <th>BOH/EOH</th>
+                                        <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                            <td class="edit-cell" name="boh_eoh" data-product="<?php echo $product; ?>"></td>
+                                        <?php endfor; ?>
+                                    </tr>
+                                    <tr>
+                                        <th>Actual Batch Output</th>
+                                        <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                            <td class="edit-cell" name="act_batch_output" data-product="<?php echo $product; ?>"></td>
+                                        <?php endfor; ?>
+                                    </tr>
+                                    <tr>
+                                        <th>Delay</th>
+                                        <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
+                                            <td class="edit-cell" name="delay" data-product="<?php echo $product; ?>"></td>
+                                        <?php endfor; ?>
+                                    </tr>
+                                </tbody>
+                            <?php } ?>
+                        </table>
+                        <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -192,7 +212,6 @@ include_once '../controller/commands.php';
             </div>
         </div>
     </div>
-    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -232,14 +251,15 @@ include_once '../controller/commands.php';
                 const editedValues = {};
 
                 editCells.forEach(cell => {
+
                     const name = cell.getAttribute('name');
                     const value = cell.querySelector('input').value;
                     const productName = cell.getAttribute('data-product'); // Get the associated product name
                     const monthName = cell.closest('tbody').querySelector('td[data-month]').getAttribute('data-month'); // Get the associated month name
-                    const week = cell.getAttribute('data-week'); // Get the associated week
+                    const week = <?php echo $week; ?> // Get the associated week
                     console.log(week);
-                    const sundayDate = cell.closest('tbody').querySelector(`td[data-week="${week}"][name="wkstart"]`).textContent; // Get the Sunday date
-                    const saturdayDate = cell.closest('tbody').querySelector(`td[data-week="${week}"][name="wkend"]`).textContent; // Get the Saturday date
+                    // const sundayDate = cell.closest('thead').querySelector(`td[data-week="${week}"][name="wkstart"]`).textContent; // Get the Sunday date
+                    // const saturdayDate = cell.closest('tbody').querySelector(`td[data-week="${week}"][name="wkend"]`).textContent; // Get the Saturday date
 
                     if (!editedValues[productName]) {
                         editedValues[productName] = {}; // Initialize an object for the product name if it doesn't exist
@@ -254,9 +274,9 @@ include_once '../controller/commands.php';
                     }
 
                     // Add month name, week, and date information to the object
-                    editedValues[productName][monthName][week].monthName = monthName;
-                    editedValues[productName][monthName][week].sundayDate = sundayDate;
-                    editedValues[productName][monthName][week].saturdayDate = saturdayDate;
+                    // editedValues[productName][monthName][week].monthName = monthName;
+                    // editedValues[productName][monthName][week].sundayDate = sundayDate;
+                    // editedValues[productName][monthName][week].saturdayDate = saturdayDate;
 
                     if (!editedValues[productName][monthName][week][name]) {
                         editedValues[productName][monthName][week][name] = []; // Initialize an array for the name if it doesn't exist within the product, month name, and week
