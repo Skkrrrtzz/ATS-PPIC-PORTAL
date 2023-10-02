@@ -1,69 +1,122 @@
 <?php
 include_once 'db.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['submit'])) {
-        // Access form data using $_POST
-        $products = $_POST['product']; // $products is now an array
-        $curmonth = $_POST['monthnow'];
-        $nxtmonth = $_POST['monthnxt'];
-        // Initialize an empty array to store date ranges
-        $dateRanges = [];
+        try {
+            // Access form data using $_POST
+            $emp_name = $_POST['emp_name'];
+            $product = $_POST['product'];
+            $curmonth = $_POST['curmonth'];
+            $nxtmonth = $_POST['monthnxt'];
 
-        $weeks = $_POST['week'];       // Array of week numbers
-        $sundays = $_POST['wkstart'];  // Array of Sunday dates
-        $saturdays = $_POST['wkend'];  // Array of Saturday dates
-        var_dump($sundays);
-        // Check if all arrays have the same length
-        if (is_array($weeks) && is_array($sundays) && is_array($saturdays) && count($weeks) === count($sundays) && count($weeks) === count($saturdays)) {
+            $weeks = $_POST['week'];
+            $start = $_POST['wkstart'];
+            $end = $_POST['wkend'];
+            $prod_build_qty = $_POST['prod_build_qty'];
+            $ship_qty = $_POST['ship_qty'];
 
-            // Loop through the arrays to construct the $dateRanges array
+            $prod_num = isset($_POST['product_no'][0]) ? (int)$_POST['product_no'][0] : 0;
+            $boh_eoh = isset($_POST['boh_eoh'][0]) ? (int)$_POST['boh_eoh'][0] : 0;
+
+            // Prepare the SQL INSERT statement
+            $Sql_Insert = "INSERT INTO master_schedule (product_names, month_names, WW, start_build_plan, end_build_date, prod_Build_Qty, product_No, ship_Qty, BOH_EOH, date_saved, updated_by)
+                           VALUES (:product_names, :month_names, :WW, :start_build_plan, :end_build_date, :prod_Build_Qty, :product_No, :ship_Qty, :BOH_EOH, NOW(), :updated_by)";
+
+            // Prepare the SQL statement for execution
+            $stmt = $pdo->prepare($Sql_Insert);
+
+            // Loop through your data and insert each record
             foreach ($weeks as $key => $week) {
-                $sunday = $sundays[$key];
-                $saturday = $saturdays[$key];
+                // Assign values to variables
+                $prod_Build_Qty = $prod_build_qty[$key][0] ? $prod_build_qty[$key][0] : 0;
+                $ship_Qty = $ship_qty[$key][0] ? $ship_qty[$key][0] : 0;
 
-                // Convert Sunday and Saturday dates to a more standard format (e.g., "2023-09-03" and "2023-09-09")
-                $sundayDate = date('Y-m-d', strtotime($sunday));
-                $saturdayDate = date('Y-m-d', strtotime($saturday));
+                // Bind variables to the placeholders
+                $stmt->bindParam(':product_names', $product);
+                $stmt->bindParam(':month_names', $curmonth);
+                $stmt->bindParam(':WW', $week);
+                $stmt->bindParam(':start_build_plan', $start[$key]);
+                $stmt->bindParam(':end_build_date', $end[$key]);
+                $stmt->bindParam(':prod_Build_Qty', $prod_Build_Qty);
+                $stmt->bindParam(':product_No', $prod_num);
+                $stmt->bindParam(':ship_Qty', $ship_Qty);
+                $stmt->bindParam(':BOH_EOH', $boh_eoh);
+                $stmt->bindParam(':updated_by', $emp_name);
 
-                // Store the date range in the $dateRanges array
-                $dateRanges[$week] = [
-                    'Sunday' => $sundayDate,
-                    'Saturday' => $saturdayDate,
-                ];
+                // Execute the SQL statement to insert data into the database
+                $stmt->execute();
+
+                // Calculate new values for prod_num and boh_eoh for the next iteration
+                $prod_num += $prod_Build_Qty;
+                $boh_eoh += $prod_Build_Qty - $ship_Qty;
             }
-        } else {
-            // Handle the case where the arrays have different lengths or are not arrays
-            echo "Invalid data in the arrays or they have different lengths.";
-        }
-
-        // Now, $dateRanges contains the date ranges with week numbers as keys
-        // You can access them like $dateRanges[36]['Sunday'] or $dateRanges[36]['Saturday']
-
-        $prod_build_qty = $_POST['prod_build_qty'];
-        $prod_no = $_POST['product_no'];
-        $ship_qty = $_POST['ship_qty'];
-        // Process the data as needed
-        foreach ($products as $key => $product) {
-            echo "Product: " . $product . "<br>";
-            echo "Month Now: " . $curmonth . "<br>";
-            echo "Next Month: " . $nxtmonth . "<br>";
-
-            foreach ($prod_build_qty[$product] as $value) {
-                echo "Production Build Qty: " . $value . "<br>";
-            }
-            foreach ($prod_no[$product] as $value) {
-                echo "Product No.: " . $value . "<br>";
-            }
-            foreach ($ship_qty[$product] as $value) {
-                echo "Ship Qty: " . $value . "<br>";
-            }
+            echo "Data inserted successfully!";
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
         }
     } else {
-        echo "no data";
+        echo "No data submitted.";
     }
 } else {
-    echo "not POST";
+    echo "Not a POST request.";
 }
+
+
+
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     if (isset($_POST['submit'])) {
+//         // Access form data using $_POST
+//         $emp_name = $_POST['emp_name'];
+//         $product = $_POST['product'];
+//         $curmonth = $_POST['curmonth'];
+//         $nxtmonth = $_POST['monthnxt'];
+
+//         $weeks = $_POST['week'];
+//         $start = $_POST['wkstart'];
+//         $end = $_POST['wkend'];
+//         $prod_build_qty = $_POST['prod_build_qty'];
+//         $ship_qty = $_POST['ship_qty'];
+
+//         $prod_num = isset($_POST['product_no'][0]) ? (int)$_POST['product_no'][0] : 0;
+//         $boh_eoh = isset($_POST['boh_eoh'][0]) ? (int)$_POST['boh_eoh'][0] : 0;
+
+//         foreach ($weeks as $key => $week) {
+//             $week;
+//             $week_start = $start[$key];
+//             $week_end = $end[$key];
+//             $build_qty = isset($prod_build_qty[$key][0]) ? $prod_build_qty[$key][0] : 0;
+//             $ship_qtys = isset($ship_qty[$key][0]) ? $ship_qty[$key][0] : 0;
+
+//             $week_start;
+//             $week_end;
+//             $build_qty;
+
+//             // Calculate the new Prod No. based on the formula
+//             if (is_numeric($build_qty) || is_numeric($ship_qtys)) {
+//                 if ($key === 0) {
+//                     // For the first iteration (index 0), use the original value
+//                     $prod_num;
+//                     $boh_eoh;
+//                 } else {
+//                     // For subsequent iterations (index > 0), apply the formula
+//                     $prod_num += $build_qty;
+//                     $boh_eoh += $build_qty - $ship_qtys;
+//                 }
+//             }
+
+//             $prod_num;
+//             $ship_qtys;
+//             $boh_eoh;
+//         }
+
+//         $Sql_Insert = "INSERT INTO master_schedule (product_names,month_names,WW,start_build_plan,end_build_date, prod_Build_Qty, product_No, ship_Qty, BOH_EOH, date_saved, updated_by) VALUES (:product_names, :month_names, :WW, :start_build_plan,:end_build_date, :product_name, :prod_Build_Qty, :product_No, :ship_Qty, :BOH_EOH)";
+//     } else {
+//         echo "no data";
+//     }
+// } else {
+//     echo "not POST";
+// }
 
 
 
