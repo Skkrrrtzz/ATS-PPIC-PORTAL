@@ -2,14 +2,15 @@
 include_once 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['submit'])) {
+    $message = "";
+    $uniqueMonths = array();
+    if (isset($_POST['add'])) {
         try {
             // Access form data using $_POST
             $emp_name = $_POST['emp_name'];
             $product = $_POST['product'];
             $curmonth = $_POST['curmonth'];
             $nxtmonth = $_POST['monthnxt'];
-
             $weeks = $_POST['week'];
             $start = $_POST['wkstart'];
             $end = $_POST['wkend'];
@@ -19,47 +20,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $prod_num = isset($_POST['product_no'][0]) ? (int)$_POST['product_no'][0] : 0;
             $boh_eoh = isset($_POST['boh_eoh'][0]) ? (int)$_POST['boh_eoh'][0] : 0;
 
+            foreach ($start as $key => $week_names) {
+                $month_name = date('F', strtotime($week_names));
+                // Check if the month name is not already in the array
+                if (!in_array($month_name, $uniqueMonths)) {
+                    $uniqueMonths[] = $month_name;
+                }
+            }
+            // Now $uniqueMonths contains unique month names
+            $month = implode(' and ', $uniqueMonths);
             // Prepare the SQL INSERT statement
             $Sql_Insert = "INSERT INTO master_schedule (product_names, month_names, WW, start_build_plan, end_build_date, prod_Build_Qty, product_No, ship_Qty, BOH_EOH, date_saved, updated_by)
                            VALUES (:product_names, :month_names, :WW, :start_build_plan, :end_build_date, :prod_Build_Qty, :product_No, :ship_Qty, :BOH_EOH, NOW(), :updated_by)";
 
+            // Prepare the SQL SELECT statement to check for existing records
+            $Sql_Select = "SELECT COUNT(*) FROM master_schedule WHERE product_names = :product_names AND month_names = :month_name";
+
             // Prepare the SQL statement for execution
-            $stmt = $pdo->prepare($Sql_Insert);
+            $stmtInsert = $pdo->prepare($Sql_Insert);
+            $stmtSelect = $pdo->prepare($Sql_Select);
 
-            // Loop through your data and insert each record
-            foreach ($weeks as $key => $week) {
-                // Assign values to variables
-                $prod_Build_Qty = $prod_build_qty[$key][0] ? $prod_build_qty[$key][0] : 0;
-                $ship_Qty = $ship_qty[$key][0] ? $ship_qty[$key][0] : 0;
+            // Bind variables to the placeholders for SELECT
+            $stmtSelect->bindParam(':product_names', $product);
+            $stmtSelect->bindParam(':month_name', $month_name);
 
-                // Bind variables to the placeholders
-                $stmt->bindParam(':product_names', $product);
-                $stmt->bindParam(':month_names', $curmonth);
-                $stmt->bindParam(':WW', $week);
-                $stmt->bindParam(':start_build_plan', $start[$key]);
-                $stmt->bindParam(':end_build_date', $end[$key]);
-                $stmt->bindParam(':prod_Build_Qty', $prod_Build_Qty);
-                $stmt->bindParam(':product_No', $prod_num);
-                $stmt->bindParam(':ship_Qty', $ship_Qty);
-                $stmt->bindParam(':BOH_EOH', $boh_eoh);
-                $stmt->bindParam(':updated_by', $emp_name);
+            // Execute the SELECT query
+            $stmtSelect->execute();
+            $rowCount = $stmtSelect->fetchColumn();
 
-                // Execute the SQL statement to insert data into the database
-                $stmt->execute();
+            if ($rowCount == 0) {
+                // Loop through your data and insert/update each record
+                foreach ($weeks as $key => $week) {
+                    // Determine the month based on the week's start date
+                    $week_start = $start[$key];
+                    $month_names = date('F', strtotime($week_start));
 
-                // Calculate new values for prod_num and boh_eoh for the next iteration
-                $prod_num += $prod_Build_Qty;
-                $boh_eoh += $prod_Build_Qty - $ship_Qty;
+                    // Assign values to variables
+                    $prod_Build_Qty = (!empty($prod_build_qty[$key])) ? $prod_build_qty[$key] : '';
+                    $ship_Qty = (!empty($ship_qty[$key])) ? $ship_qty[$key] : 0;
+
+                    for ($i = 0; $i < strlen($prod_Build_Qty); $i++) {
+                        if ($key === 0) {
+                            $prod_num;
+                        } else {
+                            $prod_num += $prod_Build_Qty[$i];
+                            $boh_eoh += $prod_Build_Qty[$i] - $ship_Qty;
+                        }
+                    }
+                    // Bind variables to the placeholders for INSERT
+                    $stmtInsert->bindParam(':product_names', $product);
+                    $stmtInsert->bindParam(':month_names', $month_names);
+                    $stmtInsert->bindParam(':WW', $week);
+                    $stmtInsert->bindParam(':start_build_plan', $start[$key]);
+                    $stmtInsert->bindParam(':end_build_date', $end[$key]);
+                    $stmtInsert->bindParam(':prod_Build_Qty', $prod_Build_Qty);
+                    $stmtInsert->bindParam(':product_No', $prod_num);
+                    $stmtInsert->bindParam(':ship_Qty', $ship_Qty);
+                    $stmtInsert->bindParam(':BOH_EOH', $boh_eoh);
+                    $stmtInsert->bindParam(':updated_by', $emp_name);
+
+                    // Execute the SQL statement to insert data into the database
+                    $stmtInsert->execute();
+                }
+                $message = "Data Inserted Successfully!";
+            } else {
+                $message = "$product with month(s) of $month already exists!";
             }
-            echo "Data inserted successfully!";
+            $alertType = ($message === "Data Inserted Successfully!") ? "alert-success" : "alert-danger";
+            $messageHTML = '<div class="alert ' . $alertType . ' alert-dismissible fade show" role="alert">
+                ' . $message . '
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>';
+            echo $messageHTML;
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            $message =  "Error: " . $e->getMessage();
+        } finally {
+            // Close the database connection
+            $pdo = null;
         }
     } else {
-        echo "No data submitted.";
+        $message = "No data submitted.";
     }
 } else {
-    echo "Not a POST request.";
+    $message = "Not a POST request.";
 }
 
 

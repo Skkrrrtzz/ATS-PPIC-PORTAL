@@ -1,6 +1,5 @@
 <?php require_once 'ppic_nav.php';
 include_once '../controller/commands.php';
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +8,7 @@ include_once '../controller/commands.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Schedule</title>
+    <script src="../js/sweetalert2.all.min.js"></script>
     <style>
         .bg-blue-60 {
             background-color: #b8c4e4;
@@ -43,9 +43,7 @@ include_once '../controller/commands.php';
                 <!-- Buttons -->
                 <div class="my-0">
                     <!-- Edit Button -->
-                    <button type="button" class="btn btn-sm btn-warning edit-all-button" data-toggle="modal" data-target="#masterSchedModal">Edit Master Schedule</button>
-                    <!-- Save Button -->
-                    <button type="submit" class="btn btn-success btn-sm float-end save-button" id="saveChangesBtn" name="save_btn">Save Changes</button>
+                    <button type="button" class="btn btn-sm btn-success edit-all-button" data-toggle="modal" data-target="#masterSchedModal">Add Master Schedule</button>
                     <!-- Upload Button -->
                     <input type="file" class="form-control-file d-none" id="pdfUpload" accept=".pdf">
                     <label for="pdfUpload" class="btn btn-primary btn-sm mt-2" id="uploadButton">Upload PDF</label>
@@ -54,17 +52,14 @@ include_once '../controller/commands.php';
                 </div>
             </div>
             <div id="message"></div>
-            <div class="card-body" style="height: 550px; overflow-y: auto;">
-                <div class="table-responsive">
-                    <input type="hidden" name="monthnow" value="<?= $currentMonthName; ?>">
-                    <input type="hidden" name="monthnxt" value="<?= $nextMonthName; ?>">
-
-                    <table class=" table-bordered text-center">
+            <div class="card-body" style="height: 600px; overflow-y: auto;">
+                <div class=" table-responsive">
+                    <table class=" table-bordered text-center" id="tableContainer">
                         <thead class="table-dark">
                             <tr>
                                 <th rowspan="4">Product</th>
                                 <th>Month</th>
-                                <td colspan="4" class="bg-blue-80 text-dark" name="monthnow"><?= $currentMonthName; ?></td>
+                                <td colspan="5" class="bg-blue-80 text-dark" name="monthnow"><?= $currentMonthName; ?></td>
                                 <td colspan="5" class="bg-gray-60 text-dark" name="monthnxt"><?= $nextMonthName; ?></td>
                             </tr>
                             <tr>
@@ -105,56 +100,7 @@ include_once '../controller/commands.php';
                                 <?php endforeach; ?>
                             </tr>
                         </thead>
-                        <?php
-                        foreach ($products as $product) {
-                            $firstTd = true;
-                        ?>
-                            <tbody>
-                                <tr>
-                                    <td rowspan="7" data-product="<?php echo $product; ?>" name="product" data-month="<?php echo $currentMonthName; ?> ">
-                                        <?php echo $product; ?>
-                                    </td>
-                                    <input type="hidden" name="product[]" value="<?= $product; ?>">
-                                    <th>Prod Build Qty</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="" name="prod_build_qty" data-product="<?php echo $product; ?>">
-                                        </td>
-                                    <?php endfor; ?>
-                                </tr>
-                                <tr>
-                                    <th><?php echo $product; ?> No.</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="" data-product="<?= $product; ?>">
-                                        </td>
-                                    <?php endfor; ?>
-                                </tr>
-                                <tr>
-                                    <th>Shipment Qty</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="" name="ship_qty" data-product="<?php echo $product; ?>">
-                                        </td>
-                                    <?php endfor; ?>
-                                </tr>
-                                <tr>
-                                    <th>BOH/EOH</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="" name="boh_eoh" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
-                                </tr>
-                                <tr>
-                                    <th>Actual Batch Output</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="" name="act_batch_output" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
-                                </tr>
-                                <tr>
-                                    <th>Delay</th>
-                                    <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
-                                        <td class="" name="delay" data-product="<?php echo $product; ?>"></td>
-                                    <?php endfor; ?>
-                                </tr>
-                            </tbody>
-                        <?php } ?>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -183,29 +129,32 @@ include_once '../controller/commands.php';
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-light">
-                    <h5 class="modal-title text-warning" id="masterSchedLabel">Editing Master Schedule</h5>
+                    <h5 class="modal-title text-success" id="masterSchedLabel">Add Master Schedule</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="input-group col-md-4 mb-3">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text" for="productSelect">Products</label>
+                    <div class="row">
+                        <div class="input-group col-md-4 mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="productSelect">Products</label>
+                            </div>
+                            <select class="custom-select" id="productSelect">
+                                <option selected>Choose...</option>
+                                <?php foreach ($products as $product) { ?>
+                                    <option><?php echo $product; ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
-                        <select class="custom-select" id="productSelect">
-                            <option selected>Choose...</option>
-                            <?php foreach ($products as $product) { ?>
-                                <option><?php echo $product; ?></option>
-                            <?php } ?>
-                        </select>
                     </div>
+                    <div id="messageContainer"></div>
                     <div class="table-responsive" id="productTable" style="display: none;">
-                        <form action="../controller/upload_data.php" method="post">
-                            <input type="text" name="emp_name" id="emp_name" value="<?php echo $emp_name; ?>">
-                            <input type="text" name="product" id="product" value="<?php echo $product; ?>">
-                            <input type="text" name="curmonth" id="curmonth" value="<?php echo $currentMonthName; ?>">
-                            <input type="text" name="monthnxt" id="monthnxt" value="<?php echo $nextMonthName; ?>">
+                        <form id="uploadForm" method="post">
+                            <input type="hidden" name="emp_name" id="emp_name" value="<?php echo $emp_name; ?>">
+                            <input type="hidden" name="product" id="product" value="<?php echo $product; ?>">
+                            <input type="hidden" name="curmonth" id="curmonth" value="<?php echo $currentMonthName; ?>">
+                            <input type="hidden" name="monthnxt" id="monthnxt" value="<?php echo $nextMonthName; ?>">
                             <table class=" table-bordered text-center">
                                 <thead class="table-dark">
                                     <tr>
@@ -310,13 +259,70 @@ include_once '../controller/commands.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+                    <button type="button" class="btn btn-primary" id="ajaxSubmit">Submit</button>
                 </div>
                 </form>
             </div>
         </div>
     </div>
     <script>
+        $(document).ready(function() {
+            // Handle form submission using AJAX
+            $("#ajaxSubmit").click(function() {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You are about to submit the form.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, submit it!",
+                    cancelButtonText: "No, cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        // Serialize form data
+                        var formData = $("#uploadForm").serialize() + "&add=true";
+
+                        // Make an AJAX POST request
+                        $.ajax({
+                            type: "POST",
+                            url: "../controller/upload_data.php",
+                            data: formData,
+                            success: function(response) {
+                                $("#messageContainer").html(response);
+                                // Clear form fields
+                                $("#uploadForm")[0].reset();
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle errors (if any)
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        $(document).ready(function() {
+            function refreshData() {
+                $.ajax({
+                    url: '../controller/refresh_mstable.php',
+                    dataType: 'html', // Expect HTML data
+                    success: function(data) {
+                        // Replace the table content with the updated data
+                        $('#tableContainer tbody').html(data);
+                    },
+                    error: function() {
+                        // Handle errors if the request fails
+                        console.log('Error fetching data.');
+                    }
+                });
+            }
+
+            // Refresh data every 10 seconds
+            setInterval(refreshData, 10000);
+
+            // Call the function to refresh data when the page loads
+            refreshData();
+        });
         document.addEventListener("DOMContentLoaded", function() {
             const productSelect = document.getElementById("productSelect");
             const productTable = document.getElementById("productTable");
@@ -340,89 +346,6 @@ include_once '../controller/commands.php';
         });
     </script>
     <script>
-        // document.getElementById('sidebarToggleTop').click();
-        // JavaScript code to add the bg-pink class if the td has a numeric value
-        const editableCells = document.querySelectorAll("#ship_qty");
-
-        editableCells.forEach(function(cell) {
-            cell.addEventListener("input", function() {
-                const content = cell.textContent.trim();
-                if (/^\d+(\.\d+)?$/.test(content)) {
-                    cell.classList.add("bg-pink");
-                } else {
-                    cell.classList.remove("bg-pink");
-                }
-            });
-        });
-
-        // JavaScript code to allow only numbers in content-editable cells
-        const cells = document.querySelectorAll('[id^="actual_batch_"]');
-
-        cells.forEach(function(cell) {
-            cell.addEventListener('input', function() {
-                const content = cell.textContent.trim();
-                const numericContent = content.replace(/[^0-9]/g, '');
-                cell.textContent = numericContent;
-            });
-        });
-        // const prodBuildQtyCells = document.querySelectorAll(".prod_build_qty");
-        // const productNoCells = document.querySelectorAll(".product_no");
-        // const productData = {};
-
-        // prodBuildQtyCells.forEach(prodBuildQtyCell => {
-        //     const productId = prodBuildQtyCell.id;
-        //     prodBuildQtyCell.addEventListener("input", function(event) {
-        //         const newValue = event.target.textContent;
-
-        //         // Numeric value validation
-        //         const numericValue = parseFloat(newValue);
-        //         if (!isNaN(numericValue)) {
-        //             // Store productId and newValue in the object
-        //             productData[productId] = numericValue;
-
-        //             // Update the value in all "prod_build_qty" cells with the same id
-        //             prodBuildQtyCells.forEach(cellToUpdate => {
-        //                 if (cellToUpdate.id === productId) {
-        //                     cellToUpdate.textContent = numericValue;
-        //                 }
-        //             });
-
-        //             // Add the value of "product_no" to "prod_build_qty"
-        //             const productNoValue = productData[`product_no_${productId}`] || 0; // Get "product_no" value or default to 0
-        //             const totalValue = numericValue + productNoValue;
-
-        //             // Log the updated values
-        //             console.log(`Product ID: ${productId}`);
-        //             console.log("Updated Value in all cells (prod_build_qty):", numericValue);
-        //             console.log("Value of product_no:", productNoValue);
-        //             console.log("Total Value:", totalValue);
-        //         } else {
-        //             // Invalid input, you can handle this case as needed
-        //             console.log("Invalid input in prod_build_qty. Please enter a numeric value.");
-        //         }
-        //     });
-        // });
-
-        // productNoCells.forEach(productNoCell => {
-        //     const productId = productNoCell.id;
-        //     productNoCell.addEventListener("input", function(event) {
-        //         const newValue = event.target.textContent;
-
-        //         // Numeric value validation
-        //         const numericValue = parseFloat(newValue);
-        //         if (!isNaN(numericValue)) {
-        //             // Store productId and newValue in the object with a unique key
-        //             productData[`product_no_${productId}`] = numericValue;
-
-        //             // Log the value inputted based on the id for "product_no"
-        //             console.log(`Inputted Value for id ${productId} (product_no):`, numericValue);
-        //         } else {
-        //             // Invalid input, you can handle this case as needed
-        //             console.log("Invalid input in product_no. Please enter a numeric value.");
-        //         }
-        //     });
-        // });
-
         // Javascript for uploading PDF file and Viewing uploaded PDF
         $(document).ready(function() {
             $("#pdfUpload").click(function() {
