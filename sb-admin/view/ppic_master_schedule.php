@@ -54,7 +54,7 @@ include_once '../controller/commands.php';
             <div id="message"></div>
             <div class="card-body" style="height: 600px; overflow-y: auto;">
                 <div class=" table-responsive">
-                    <table class=" table-bordered text-center" id="tableContainer">
+                    <table class="table table-bordered text-center" id="tableContainer">
                         <thead class="table-dark">
                             <tr>
                                 <th rowspan="4">Product</th>
@@ -217,7 +217,7 @@ include_once '../controller/commands.php';
                                         <?php for ($i = 0; $i < $saturdaysCount; $i++) : ?>
                                             <td name="product_no">
                                                 <?php if ($i === 0) { ?>
-                                                    <input type="number" class="w-75" name="product_no[]" value="">
+                                                    <input type="number" class="w-75" name="product_no[]" id="productNoInput" value="" required>
                                                 <?php } ?>
                                             </td>
                                         <?php endfor; ?>
@@ -278,25 +278,36 @@ include_once '../controller/commands.php';
                     cancelButtonText: "No, cancel",
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // Get the input element
+                        var productNoInput = document.getElementById("productNoInput");
 
-                        // Serialize form data
-                        var formData = $("#uploadForm").serialize() + "&add=true";
+                        // Check if the input has a value
+                        if (productNoInput.value === "") {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Field is blank.",
+                                text: "Please fill out the fields.",
+                            });
+                        } else {
+                            // Serialize form data
+                            var formData = $("#uploadForm").serialize() + "&add=true";
 
-                        // Make an AJAX POST request
-                        $.ajax({
-                            type: "POST",
-                            url: "../controller/upload_data.php",
-                            data: formData,
-                            success: function(response) {
-                                $("#messageContainer").html(response);
-                                // Clear form fields
-                                $("#uploadForm")[0].reset();
-                            },
-                            error: function(xhr, status, error) {
-                                // Handle errors (if any)
-                                console.error(xhr.responseText);
-                            }
-                        });
+                            // Make an AJAX POST request
+                            $.ajax({
+                                type: "POST",
+                                url: "../controller/upload_data.php",
+                                data: formData,
+                                success: function(response) {
+                                    $("#messageContainer").html(response);
+                                    // Clear form fields
+                                    $("#uploadForm")[0].reset();
+                                },
+                                error: function(xhr, status, error) {
+                                    // Handle errors (if any)
+                                    console.error(xhr.responseText);
+                                }
+                            });
+                        }
                     }
                 });
             });
@@ -317,8 +328,8 @@ include_once '../controller/commands.php';
                 });
             }
 
-            // Refresh data every 10 seconds
-            setInterval(refreshData, 10000);
+            // Refresh data every 5 seconds
+            setInterval(refreshData, 5000);
 
             // Call the function to refresh data when the page loads
             refreshData();
@@ -400,17 +411,27 @@ include_once '../controller/commands.php';
                                 $("#pdfModal").modal("show");
                             } else {
                                 // Handle the case where the PDF URL is not found
-                                alert("PDF URL not found in the database.");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'PDF URL not found in the database.'
+                                });
                             }
                         } catch (error) {
                             // Handle JSON parsing errors or other issues
                             // console.error(error);
-                            alert("No PDF uploaded");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'No PDF uploaded'
+                            });
                         }
                     },
                     error: function() {
                         // Handle AJAX error, if any
-                        alert("Error fetching PDF URL from the database.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error fetching PDF URL from the database.',
+                            text: 'Please contact the admin, thanks!',
+                        });
                     }
                 });
             });
